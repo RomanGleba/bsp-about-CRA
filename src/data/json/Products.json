@@ -1,0 +1,103 @@
+{
+  "Dasty": {
+    "products": [
+      {
+        "id": "p1",
+        "name": "Dasty сухий корм для котів м'ясне асорті 10кг",
+        "image": "dasty/dasty-beef"
+      },
+      {
+        "id": "p2",
+        "name": "Dasty Chicken 400g",
+        "image": "dasty/dasty-banka"
+      },
+      {
+        "id": "p3",
+        "name": "Dasty сухий корм для котів м'ясне асорті 10кг",
+        "image": "dasty/dasty-cat"
+      },
+      {
+        "id": "p4",
+        "name": "Dasty",
+        "image": "dasty/dasty-cat-banka"
+      }
+    ]
+  },
+
+  "Fincsi": {
+    "products": [
+      {
+        "id": "p5",
+        "name": "Fincsi dog 1kg",
+        "image": "fincsi/fincsi-dog-banka"
+      },
+      {
+        "id": "p6",
+        "name": "Fincsi dog 10kg",
+        "image": "fincsi/fincsi-dog-korm"
+      },
+      {
+        "id": "p7",
+        "name": "Fincsi salami 800g",
+        "image": "fincsi/fincsi-dog-salami"
+      }
+    ]
+  },
+
+  "Spiky": {
+    "products": [
+      {
+        "id": "p8",
+        "name": "Spiky курка Корм для собак 10kg",
+        "image": "spiky/spiky-chicken"
+      },
+
+      {
+        "id": "p9",
+        "name": "Spiky курка Корм для собак 10kg",
+        "image": "spiky/spiky-beef"
+      },
+
+      {
+        "id": "p10",
+        "name": "Spiky курка Корм для собак 10kg",
+        "image": "spiky/spiky-maxi-beef"
+      }
+    ]
+  },
+  "Cattos": {
+    "products": [
+      {
+        "id": "p11",
+        "name": "Cattos Яловичина Вологий Корм для котів  415g",
+        "image": "cattos/cattos-beef-banka"
+
+      },
+      {
+        "id": "p12",
+        "name": "Cattos Вологий корм для котів 415g",
+        "image": "cattos/cattos-chicken-banka"
+      }
+    ]
+  },
+"ThankQ": {
+  "products": [
+    {
+      "id": "p13",
+      "name": "Cattos Яловичина Вологий Корм для котів  415g",
+      "image": "thankQ/thankq-green"
+
+    },
+    {
+      "id": "p14",
+      "name": "Cattos Вологий корм для котів 415g",
+      "image": "thankQ/thankq-yellow"
+    }
+
+
+
+  ]
+
+
+}
+}

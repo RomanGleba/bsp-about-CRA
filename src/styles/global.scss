@@ -1,0 +1,81 @@
+@use './vars' as v;
+@use './mixins' as m;
+
+/* ---------- Base / Reset ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* узгоджені змінні */
+:root {
+  --header-h: 0px;
+  --hero-shift: 0px;
+  --content-shift: 0px;
+}
+
+html, body, #root { height: 100%; }
+
+/* без горизонтального скролу, плавний скрол */
+html, body {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none;
+}
+
+/* блокування вертикального скролу за необхідності */
+body.no-scroll {
+  overflow-y: hidden;
+
+}
+
+/* ---------- Typography / Body ---------- */
+body {
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans";
+  background: v.$bg;
+  color: v.$fg;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Медіа не виходять за межі */
+img, picture, svg, video, canvas { display: block; max-width: 100%; }
+
+/* Видимий фокус */
+a, button, [role="button"] { outline: none; }
+:focus-visible { outline: 3px solid rgba(22,163,74,.85); outline-offset: 2px; }
+
+/* ---------- Ant Layout ---------- */
+.ant-layout,
+.ant-layout-content { padding: 0 !important; margin: 0 !important; background: transparent !important; }
+.ant-layout-header { margin: 0 !important; border: 0 !important; }
+
+/* full-bleed елементи можуть виходити за контейнер */
+.ant-layout, .ant-layout-content, main { overflow: visible !important; }
+
+/* ---------- Utilities ---------- */
+.container { @include m.container; }
+
+/* глобальна утиліта full-bleed */
+.full-bleed {
+  width: 100svw;
+  left: 50%; right: 50%;
+  margin-left: -50svw; margin-right: -50svw;
+
+  @supports (transform: translateX(1px)) {
+    margin-left: 0; margin-right: 0;
+    transform: translateX(calc(50vw - 50%));
+  }
+}
+
+/* screen-reader only */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* повага до налаштувань користувача */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
