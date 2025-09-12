@@ -77,19 +77,30 @@
         "id": "p12",
         "name": "Cattos Вологий корм для котів 415g",
         "image": "cattos/cattos-chicken-banka"
+      },
+      {
+        "id": "p13",
+        "name": "Cattos Вологий корм для котів 415g",
+        "image": "cattos/cattos-fish-banka"
+      },
+      {
+        "id": "p14",
+        "name": "Cattos Вологий корм для котів 415g",
+        "image": "cattos/cattos-meat-banka"
       }
+
     ]
   },
 "ThankQ": {
   "products": [
     {
-      "id": "p13",
+      "id": "p15",
       "name": "Cattos Яловичина Вологий Корм для котів  415g",
       "image": "thankQ/thankq-green"
 
     },
     {
-      "id": "p14",
+      "id": "p16",
       "name": "Cattos Вологий корм для котів 415g",
       "image": "thankQ/thankq-yellow"
     }
@@ -98,6 +109,38 @@
 
   ]
 
+
+},
+"Miss kiss":{
+  "products": [
+    {
+      "id": "p17",
+      "name": "Cattos Яловичина Вологий Корм для котів  415g",
+      "image": "miskis/miskis-turkey-pouch"
+
+    },
+    {
+      "id": "p18",
+      "name": "Cattos Вологий корм для котів 415g",
+      "image": "miskis/pouch-beef"
+    },
+    {
+      "id": "p19",
+      "name": "Cattos Яловичина Вологий Корм для котів  415g",
+      "image": "miskis/pouch-chicken"
+
+    },
+    {
+      "id": "p20",
+      "name": "Cattos Вологий корм для котів 415g",
+      "image": "miskis/pouch-duck"
+    },
+    {
+      "id": "p21",
+      "name": "Cattos Вологий корм для котів 415g",
+      "image": "miskis/pouch-rabbit"
+    }
+  ]
 
 }
 }

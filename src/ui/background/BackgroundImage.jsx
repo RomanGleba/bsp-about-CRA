@@ -1,4 +1,3 @@
-// BackgroundImage.jsx
 import React from "react";
 import style from "./Background.module.scss";
 
@@ -29,7 +28,7 @@ export default function BackgroundImage({
                 alt={alt}
                 className={style.bg}
                 loading="eager"
-                fetchPriority="high"
+                fetchpriority="high"
                 decoding="async"
             />
         </picture>

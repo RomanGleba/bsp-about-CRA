@@ -20,31 +20,48 @@ const { Title, Paragraph, Text } = Typography;
 const normBrandKey = (v = '') =>
     v.toString().trim().toLowerCase().replace(/\s+/g, '-');
 
-/* ===== Підтягуємо всі лого з src/assets/brands/* (webpack require.context) =====
-   Якщо у тебе інша папка — підправ шлях у require.context.
-   Якщо деяких файлів немає у src, спрацює фолбек на public/images/brands/*.webp
-*/
+/* ===== Підтягуємо всі лого з src/assets/brands/* (працює і у Vite, і у Webpack) ===== */
 const brandAssetsMap = (() => {
-    let ctx;
-    try {
-        // Відносний шлях від цього файлу до src/assets/brands
-        ctx = require.context('../../assets/brands', false, /\.(png|jpe?g|webp|svg)$/);
-    } catch {
-        // Якщо папки немає в src, просто залишимо порожню мапу — спрацює фолбек із public/
-        return {};
-    }
-
     const map = {};
-    ctx.keys().forEach((k) => {
-        // k вигляду './natures-protection.webp'
-        const file = k.replace('./', '');
-        const base = file.replace(/\.(png|jpe?g|webp|svg)$/i, '');
-        const dash = normBrandKey(base);         // natures-protection
-        const tight = dash.replace(/-/g, '');    // naturesprotection
-        const url = ctx(k);
-        map[dash] = url;
-        map[tight] = url;
-    });
+
+    // Vite / modern bundlers
+    try {
+        // eslint-disable-next-line no-undef
+        if (typeof import.meta !== 'undefined' && import.meta.glob) {
+            // @ts-ignore
+            const mods = import.meta.glob('../../assets/brands/*.{png,jpg,jpeg,webp,svg}', {
+                eager: true,
+                as: 'url'
+            });
+            for (const p in mods) {
+                const file = p.split('/').pop() || '';
+                const base = file.replace(/\.(png|jpe?g|webp|svg)$/i, '');
+                const dash = normBrandKey(base);
+                const tight = dash.replace(/-/g, '');
+                // @ts-ignore
+                const url = mods[p];
+                map[dash] = url;
+                map[tight] = url;
+            }
+            return map;
+        }
+    } catch { /* noop */ }
+
+    // Webpack (CRA)
+    try {
+        // eslint-disable-next-line global-require
+        const ctx = require.context('../../assets/brands', false, /\.(png|jpe?g|webp|svg)$/);
+        ctx.keys().forEach((k) => {
+            const file = k.replace('./', '');
+            const base = file.replace(/\.(png|jpe?g|webp|svg)$/i, '');
+            const dash = normBrandKey(base);
+            const tight = dash.replace(/-/g, '');
+            const url = ctx(k);
+            map[dash] = url;
+            map[tight] = url;
+        });
+    } catch { /* папки може не бути — ок */ }
+
     return map;
 })();
 
@@ -66,9 +83,9 @@ const Para = React.memo(({ children, className }) =>
 const StatStrip = React.memo(({ stats = [] }) => {
     if (!stats?.length) return null;
     return (
-        <div className={s.stats}>
+        <div className={s.stats} role="list" aria-label="Ключові показники компанії">
             {stats.map((it, i) => (
-                <div key={`${it.label}-${i}`} className={s.statItem}>
+                <div key={`${it.label}-${i}`} className={s.statItem} role="listitem">
                     <div className={s.statValue}>{it.value}</div>
                     <div className={s.statLabel}>{it.label}</div>
                 </div>
@@ -84,7 +101,6 @@ const BrandGrid = React.memo(({ title, names = [] }) => {
         <div className={s.brandBlock}>
             <Title level={4} className={s.h4}>{title}</Title>
 
-            {/* прибрав role="list" / "listitem", бо це дає лінтер-варни у CRA */}
             <ul className={s.brandGrid}>
                 {names.map((name) => (
                     <li
@@ -102,7 +118,6 @@ const BrandGrid = React.memo(({ title, names = [] }) => {
                                 const img = e.currentTarget; img.onerror = null;
                                 if (/\.webp($|\?)/i.test(img.src)) { img.src = img.src.replace(/\.webp/i, '.png'); return; }
                                 if (/\.png($|\?)/i.test(img.src))  { img.src = img.src.replace(/\.png/i,  '.jpg'); return; }
-                                // останній шанс — плейсхолдер у public
                                 img.src = `${process.env.PUBLIC_URL}/images/brands/placeholder.webp`;
                             }}
                         />
@@ -162,7 +177,6 @@ export default function About() {
     return (
         <main
             className={s.page}
-            /* головна змінна розміру лого; хочеш більше — підніми число */
             style={{ '--hero-shift': '200px', '--content-shift': '200px' }}
         >
             {/* HERO з фоном */}

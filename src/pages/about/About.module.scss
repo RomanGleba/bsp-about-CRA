@@ -54,7 +54,13 @@ $xs: 360px;
   @supports not (min-height: 100dvh) { min-height: 100vh; }
 }
 
-.heroBg { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba($ink,.06), rgba($ink,.03)); }
+/* БІЛЬШ ПРОЗОРИЙ ОВЕРЛЕЙ ЗНИЗУ, ЩОБ ФОН БУВ ВИДИМІШИЙ */
+.heroBg {
+  position: absolute; inset: 0;
+  background:
+          linear-gradient(to bottom, rgba($ink,.18) 0%, rgba($ink,.10) 35%, rgba($ink,0) 70%),
+          linear-gradient(to top, rgba($ink,.06), rgba($ink,.02));
+}
 .heroGlass { position: relative; z-index: 1; width: 100%; display: grid; place-items: center; padding-inline: 16px; }
 
 .heroInner {
@@ -92,7 +98,8 @@ $xs: 360px;
 .statLabel { font-size: 1rem; color: $ink; opacity: .72; }
 
 /* ===== CONTENT ===== */
-.section { padding: calc(0px + var(--content-shift)) 0 0px; background: #eed7ee; margin-top: calc(var(--section-shift) - 200px); }
+/* ЗАМІНА РОЖЕВОГО НА НЕЙТРАЛЬНИЙ ЧЕРЕЗ CSS ЗМІННУ */
+.section { padding: calc(0px + var(--content-shift)) 0 0px; background: var(--about-section-bg, #F1F5F9); margin-top: calc(var(--section-shift) - 200px); }
 .container { max-width: 1200px; margin: calc(var(--container-shift) - 50px) auto 0; }
 
 /* ВЕРХНІЙ ОТСТУП ДЛЯ СЕКЦІЇ БРЕНДІВ */
@@ -163,6 +170,8 @@ $xs: 360px;
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) { .container { width: min(1100px, 92%); } }
 @media (max-width: 1024px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+
+/* МОБІЛЬНИЙ HERO: менше «скла», прозоріший оверлей */
 @media (max-width: $sm) {
   .page {
     --container-shift: -380px;
@@ -170,6 +179,17 @@ $xs: 360px;
     --inner-shift: 10px;
     --content-shift: 16px;
     --logo-max-h: 48px;
+  }
+  .heroBg {
+    background:
+            linear-gradient(to bottom, rgba($ink,.14) 0%, rgba($ink,.06) 28%, rgba($ink,0) 68%);
+  }
+  .heroInner {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    padding: clamp(16px, 4vw, 22px);
   }
   .section { margin-top: 0; padding-top: calc(40px + var(--content-shift)); }
   .stats { grid-template-columns: 1fr; gap: 14px; }

@@ -1,38 +1,63 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Segmented, Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
 import s from './LangSwitcher.module.scss';
 
-const OPTIONS = [
-    { value: 'ua', label: <span className={s.opt}>МОВА</span> },
-    { value: 'en', label: <span className={s.opt}>EN</span> },
-];
+const normalize = (code = '') => (String(code).startsWith('en') ? 'en' : 'uk');
 
 export default function LangSwitcher() {
     const { i18n } = useTranslation();
-    const current = i18n.language?.startsWith('en') ? 'en' : 'ua';
 
+    // Ініціалізація зі сховища / i18n / браузера
+    const [value, setValue] = useState(() => {
+        const saved =
+            typeof window !== 'undefined' ? window.localStorage.getItem('lang') : null;
+        const lang =
+            saved ||
+            i18n.resolvedLanguage ||
+            (typeof navigator !== 'undefined' ? navigator.language : 'uk');
+        return normalize(lang);
+    });
+
+    // Синхронізація при зміні value: i18n, <html lang>, localStorage
     useEffect(() => {
-        const saved = localStorage.getItem('lang');
-        if (saved && saved !== current) i18n.changeLanguage(saved);
-        document.documentElement.lang = (saved || current) === 'en' ? 'en' : 'uk';
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        if (i18n.resolvedLanguage && normalize(i18n.resolvedLanguage) !== value) {
+            i18n.changeLanguage(value);
+        }
+        if (typeof document !== 'undefined') {
+            document.documentElement.lang = value === 'en' ? 'en' : 'uk';
+        }
+        if (typeof window !== 'undefined') {
+            window.localStorage.setItem('lang', value);
+        }
+    }, [value, i18n]);
 
-    const onChange = (v) => {
-        i18n.changeLanguage(v);
-        localStorage.setItem('lang', v);
-        document.documentElement.lang = v === 'en' ? 'en' : 'uk';
-    };
+    // Підписка: якщо мову змінять десь ще → оновити локальний стан
+    useEffect(() => {
+        const handler = (lng) => setValue(normalize(lng));
+        i18n.on('languageChanged', handler);
+        return () => i18n.off('languageChanged', handler);
+    }, [i18n]);
+
+    const options = useMemo(
+        () => [
+            { value: 'uk', label: <span className={s.opt}>UA</span> },
+            { value: 'en', label: <span className={s.opt}>EN</span> },
+        ],
+        []
+    );
+
+    const title = value === 'uk' ? 'Мова: Українська' : 'Language: English';
+
+    const onChange = (v) => setValue(normalize(v));
 
     return (
-        <Tooltip title={current === 'ua' ? 'Мова: Українська' : 'Language: English'}>
-            {/* фіксована ширина всього свічера */}
+        <Tooltip title={title}>
             <Segmented
-                aria-label="Language switcher"
-                value={current}
+                aria-label={title}
+                value={value}
                 onChange={onChange}
-                options={OPTIONS}
+                options={options}
                 size="small"
                 className={s.switcher}
             />

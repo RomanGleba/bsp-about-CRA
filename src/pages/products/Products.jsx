@@ -126,6 +126,14 @@ export default function Products() {
     return (
         <section className={s.section}>
             <ResponsiveBanner
+                mobileWebp="/images/backgrounds/mobile/more-dogs.webp"
+                mobileJpg="/images/backgrounds/mobile/dogs.jpg"
+                tabletWebp="/images/backgrounds/tablet/more-dogs.webp"
+                tabletJpg="/images/backgrounds/tablet/dogs.jpg"
+                desktopWebp="/images/backgrounds/desktop/more-dogs.webp"
+                desktopJpg="/images/backgrounds/desktop/dogs.jpg"
+                alt={t('products.bannerAlt', { defaultValue: 'Корм для улюбленців' })}
+
                 height="clamp(340px, 56vh, 600px)"
                 overlay="linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.25))"
                 className={s.bannerFull}
@@ -134,14 +142,11 @@ export default function Products() {
                 positionMobile="50% 48%"
             >
                 <div className={s.bannerContent}>
-                    <h1 className={s.bannerTitle}>
-                        {t('products.title', { defaultValue: 'Наша продукція' })}
-                    </h1>
-                    <p className={s.bannerLead}>
-                        {t('products.lead', { defaultValue: 'Ми імпортуємо та дистриб’юємо якісні товари для ваших улюбленців.' })}
-                    </p>
+                    <h1 className={s.bannerTitle}>{t('products.title', { defaultValue: 'Наша продукція' })}</h1>
+                    <p className={s.bannerLead}>{t('products.lead', { defaultValue: 'Ми імпортуємо та дистриб’юємо якісні товари для ваших улюбленців.' })}</p>
                 </div>
             </ResponsiveBanner>
+
 
             <div className={s.container}>
                 <Divider orientation="left">

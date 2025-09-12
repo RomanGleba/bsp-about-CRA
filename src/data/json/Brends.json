@@ -1,10 +1,9 @@
 {
   "brends": [
     { "id": "brend1", "name": "Dasty",  "image": "dasty-fon" },
-    { "id": "brend2", "name": "Spiky",  "image": "spiky" },
+    { "id": "brend2", "name": "Spiky",  "image": "spiky-fon" },
     { "id": "brend3", "name": "Fincsi", "image": "fincsi-fon" },
-    { "id": "brend4", "name": "Miss kiss", "image": "misskis" },
-    { "id": "brend5", "name": "Spiky", "image": "" },
+    { "id": "brend4", "name": "Miss kiss", "image": "miskis-fon" },
     { "id": "brend6", "name": "Cattos", "image": "" },
     {"id": "brend7", "name": "ThankQ", "image": "thankq-fon"}
   ]
