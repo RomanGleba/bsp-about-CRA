@@ -4,6 +4,8 @@ $sm: 576px;
 $xs: 400px;
 
 $green: #16a34a;
+$green-600: #15803d;
+$mint: #eaf3ee;
 
 /* HEADER */
 .header {
@@ -30,11 +32,11 @@ $green: #16a34a;
   @media (max-width: $sm) { height: 56px; padding: 0 10px; gap: 10px; }
 }
 
-/* LOGО */
+/* LOGO */
 .logo { display: inline-flex; align-items: center; line-height: 0; }
 .logoShift { transform: translate(-10px, 20px); }
 
-/* NAV */
+/* DESKTOP NAV */
 .navDesktop { flex: 1; display: none; margin-left: 8px; @media (min-width: $lg) { display: block; } }
 .menu { display: flex; gap: 10px; align-items: center; list-style: none; margin: 0; padding: 0; }
 
@@ -51,14 +53,16 @@ $green: #16a34a;
   transition: color .15s ease, background .15s ease;
 }
 .navLink:hover { color: $green; background: #eef3f0; }
-.navLinkActive { color: $green; background: #eaf3ee; }
+.navLinkActive { color: $green; background: $mint; }
 
 /* ACTIONS */
 .actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
 .onlyDesktop { display: flex; align-items: center; gap: 10px; }
 @media (max-width: $lg) { .onlyDesktop { display: none; } }
 
-/* CTA — без hover/active ефектів */
+.onlyMobile { display: none; @media (max-width: $lg) { display: flex; align-items: center; } }
+
+/* CTA */
 .cta {
   flex: 0 0 auto;
   height: 36px;
@@ -66,98 +70,117 @@ $green: #16a34a;
   min-width: 128px;
   font-weight: 600;
   border-radius: 999px;
-
   background: $green;
   color: #fff;
   text-decoration: none;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
 
   .icon { font-size: 16px; }
-
-  &:link,
-  &:visited { color: #fff; text-decoration: none; }
+  &:link, &:visited { color: #fff; text-decoration: none; }
 }
+.cta:hover { background: $green-600; }
 
-/* ICON BUTTONS — взагалі без кола/фону/бордера */
+/* ICON BUTTONS */
 .btnIcon {
   border: 0 !important;
   background: transparent !important;
-  padding: 6px;        /* клік-таргет */
+  padding: 6px;
   line-height: 0;
-  border-radius: 0;    /* ← прибрали округлення */
+  border-radius: 0;
   color: #222;
 
   svg { display: block; width: 22px; height: 22px; }
 
-  &:hover,
-  &:active { background: transparent !important; }
-
-  /* показуємо рамку лише при клавіатурному фокусі */
+  &:hover, &:active { background: transparent !important; }
   &:focus { outline: none; }
   &:focus-visible { outline: 2px solid rgba(0,0,0,.3); outline-offset: 2px; }
 }
 
 /* Burger */
-.burger { padding: 0; }
+.burger { padding: 0; display: inline-flex; @media (min-width: $lg) { display: none; } }
 
-/* MOBILE MENU */
+/* ============ MOBILE FULLSCREEN MENU ============ */
 .sidebar {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100dvh;
+  z-index: 2000;
+
   background: rgba(255,255,255,0.96);
   backdrop-filter: blur(6px);
-  transform: translateX(100%);
-  transition: transform .3s ease;
-  z-index: 2000;
+  -webkit-backdrop-filter: blur(6px);
+
   display: flex;
   flex-direction: column;
+
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity .26s ease, transform .26s ease;
+
   padding: 20px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
-.sidebarOpen { transform: translateX(0); }
+.sidebarOpen {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
 
 .sidebarHeader {
   display: flex; justify-content: space-between; align-items: center;
-  padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,.08);
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
 }
 
+/* верхній ряд: ПРАВОРУЧ + 20px */
 .sidebarTop {
-  display: flex; align-items: center; gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 14px 0;
   border-bottom: 1px dashed rgba(0,0,0,.06);
+
+  justify-content: flex-end;
+  padding-inline-end: 20px;
 
   .ctaMobile {
     height: 34px;
     padding: 0 10px;
     min-width: 112px;
-    color: #fff;
-    text-decoration: none;
     border-radius: 999px;
     background: $green;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+    color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    text-decoration: none;
   }
 }
 
 .sidebarNav {
-  padding: 18px 0;
+  padding: 18px 0 24px;
   ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+
   a {
-    padding: 14px; border-radius: 12px; font-size: 18px; font-weight: 500;
-    text-decoration: none; color: #222; background: #fff;
-    transition: background .2s ease, color .2s ease;
+    display: block;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 16.5px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #222;
+    background: #fff;
+    box-shadow: 0 1px 0 rgba(0,0,0,.04);
+    transition: background .2s ease, color .2s ease, box-shadow .2s ease;
   }
   a:hover { background: #f3f6f4; color: $green; }
-  .navLinkActive { background: #eaf3ee; color: $green; }
+
+  .navLinkActive {
+    background: $mint;
+    color: $green;
+    box-shadow: 0 0 0 1px rgba(22,163,74,.16) inset;
+  }
 }
 
 /* very small phones */
