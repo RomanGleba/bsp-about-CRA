@@ -1,29 +1,44 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Button } from 'antd';
-import { PhoneOutlined, MenuOutlined, CloseOutlined } from '@ant-design/icons';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { PhoneOutlined, CloseOutlined } from '@ant-design/icons'; // <-- прибрали MenuOutlined
 import { useTranslation } from 'react-i18next';
 import LangSwitcher from '../lang/LangSwitcher';
 import Logo from '../../ui/logo/Logo.jsx';
 import s from './Navbar.module.scss';
 
+function IconBurger({ size = 22, className = '' }) {
+    // простий бургер без рамок
+    return (
+        <svg
+            className={className}
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+        >
+            <path d="M4 7.5h16M4 12h16M4 16.5h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+        </svg>
+    );
+}
+
 export default function Navbar() {
     const { pathname } = useLocation();
-    const navigate = useNavigate();
     const { t } = useTranslation();
 
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     const navItems = useMemo(
         () => [
             { key: '/', label: t('header.home'), to: '/' },
             { key: '/products', label: t('header.products'), to: '/products' },
             { key: '/partners', label: t('header.partners'), to: '/partners' },
+            { key: '/contacts', label: t('header.contacts'), to: '/contacts' },
             { key: 'marketplace', label: t('header.marketplace'), external: 'https://your-marketplace-link.com' },
-
         ],
-        [t],
+        [t]
     );
 
     const activeKey = useMemo(() => {
@@ -37,29 +52,28 @@ export default function Navbar() {
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 2);
-        onScroll();
+        const onResize = () => setIsMobile(window.innerWidth < 992);
+        onScroll(); onResize();
         window.addEventListener('scroll', onScroll, { passive: true });
-        return () => window.removeEventListener('scroll', onScroll);
+        window.addEventListener('resize', onResize);
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', onResize);
+        };
     }, []);
 
-    // блокувати скрол сторінки, коли відкрите меню
     useEffect(() => {
         const prev = document.body.style.overflow;
         document.body.style.overflow = open ? 'hidden' : prev || '';
-        return () => {
-            document.body.style.overflow = prev;
-        };
+        return () => { document.body.style.overflow = prev; };
     }, [open]);
 
-    // закривати по Escape
     useEffect(() => {
         if (!open) return;
         const onKey = (e) => e.key === 'Escape' && setOpen(false);
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
     }, [open]);
-
-    const toContacts = () => navigate('/contacts');
 
     return (
         <header className={`${s.header} ${scrolled ? s.scrolled : ''}`} role="banner">
@@ -99,36 +113,41 @@ export default function Navbar() {
                     </ul>
                 </nav>
 
-                {/* Actions (праворуч) */}
+                {/* Actions */}
                 <div className={s.actions}>
                     <div className={s.onlyDesktop}>
                         <LangSwitcher />
                     </div>
 
-                    <Button
-                        type="primary"
-                        shape="round"
-                        className={s.cta}
-                        icon={<PhoneOutlined />}
-                        onClick={toContacts}
+                    {isMobile && (
+                        <div className={s.onlyMobile}>
+                            <LangSwitcher mobileMode />
+                        </div>
+                    )}
+
+                    {/* Кнопка дзвінка */}
+                    <a
+                        href="tel:+380979445353"
+                        className={`${s.cta} ${s.btn}`}
                         aria-label={t('header.contact')}
                     >
-                        {t('header.contact')}
-                    </Button>
+                        <PhoneOutlined className={s.icon} />
+                        <span>{t('header.contact')}</span>
+                    </a>
 
-                    <Button
-                        className={s.burger}
-                        type="text"
-                        icon={<MenuOutlined />}
+                    <button
+                        className={`${s.burger} ${s.btnIcon}`}
                         aria-label={t('header.menu') || 'Меню'}
                         onClick={() => setOpen(true)}
-                    />
+                    >
+                        <IconBurger />
+                    </button>
                 </div>
             </div>
 
-            {/* MOBILE FULLSCREEN MENU */}
+            {/* Mobile menu */}
             <aside
-                className={`${s.sidebar} ${open ? s.open : ''}`}
+                className={`${s.sidebar} ${open ? s.sidebarOpen : ''}`}
                 role="dialog"
                 aria-modal="true"
                 aria-label={t('header.menu') || 'Меню'}
@@ -142,30 +161,26 @@ export default function Navbar() {
                     >
                         <Logo width={130} height={36} compact />
                     </Link>
-                    <Button
-                        type="text"
-                        icon={<CloseOutlined />}
+                    <button
+                        className={`${s.btnIcon} ${s.closeBtn}`}
                         aria-label="Закрити меню"
                         onClick={() => setOpen(false)}
-                    />
+                    >
+                        <CloseOutlined />
+                    </button>
                 </div>
 
-                {/* верхній ряд дій */}
                 <div className={s.sidebarTop}>
-                    <LangSwitcher />
-                    <Button
-                        type="primary"
-                        shape="round"
-                        className={`${s.cta} ${s.ctaMobile}`}
-                        icon={<PhoneOutlined />}
-                        onClick={() => {
-                            setOpen(false);
-                            toContacts();
-                        }}
+                    <LangSwitcher mobileMode />
+                    <a
+                        href="tel:+380979445353"
+                        className={`${s.cta} ${s.ctaMobile} ${s.btn}`}
                         aria-label={t('header.contact')}
+                        onClick={() => setOpen(false)}
                     >
-                        {t('header.contact')}
-                    </Button>
+                        <PhoneOutlined className={s.icon} />
+                        <span>{t('header.contact')}</span>
+                    </a>
                 </div>
 
                 <nav className={s.sidebarNav} aria-label="Мобільна навігація">

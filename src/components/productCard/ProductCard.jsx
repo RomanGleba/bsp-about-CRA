@@ -1,67 +1,67 @@
-import React, { useCallback, memo } from 'react';
-import { Card, Typography } from 'antd';
+import React, { memo } from 'react';
 import ProductImage from '../../ui/background/media/productImage/ProductImage';
 import s from './ProductCard.module.scss';
 
-const { Title } = Typography;
+/** Оптимальні розміри під 4-3-2 в ряд */
+const DEFAULT_SIZES = '(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw';
 
 /**
- * Підійде для твоєї 4-в-ряд (lg), 3-в-ряд (md), 2-в-ряд (xs/sm) сітки.
- * Браузер сам вибере оптимальну ширину зображення.
+ * props:
+ *  - p: { name, image, ... }
+ *  - priority?: boolean
+ *  - onClick?: () => void   // якщо є — картка стає <button>
+ *  - focused?: boolean      // стилі картки у фокус-режимі
+ *  - sizes?: string         // <img sizes>
+ *  - imgProps?: object      // додаткові пропси до <img> всередині ProductImage
+ *  - titleTag?: keyof JSX.IntrinsicElements  // тег заголовка, за замовч. 'h5'
  */
-const DEFAULT_SIZES =
-    '(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw';
-
-function ProductCardBase({ p, priority = false, onClick }) {
-    const interactive = !!onClick;
-
-    const onKeyDown = useCallback((e) => {
-        if (!interactive) return;
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onClick();
-        }
-    }, [interactive, onClick]);
+function ProductCardBase({
+                             p,
+                             priority = false,
+                             onClick,
+                             focused = false,
+                             sizes = DEFAULT_SIZES,
+                             imgProps = {},
+                             titleTag: TitleTag = 'h5',
+                         }) {
+    const interactive = typeof onClick === 'function';
+    const Tag = interactive ? 'button' : 'div';
 
     return (
-        <Card
-            className={s.productCard}
-            variant="outlined"
+        <Tag
+            type={interactive ? 'button' : undefined}
+            className={[
+                s.productCard,
+                interactive ? s.clickable : '',
+                focused ? s.focused : '',
+            ].filter(Boolean).join(' ')}
             role={interactive ? 'button' : 'group'}
-            tabIndex={interactive ? 0 : -1}
             aria-label={p?.name || 'Картка товару'}
-            onClick={onClick}
-            onKeyDown={onKeyDown}
-            hoverable={interactive}
-            styles={{ body: { padding: 18 } }}
+            onClick={interactive ? onClick : undefined}
+            title={p?.name}
+            data-interactive={interactive || undefined}
         >
-            {/* Фіксуємо геометрію, щоб уникнути CLS */}
-            <div className={s.media} aria-hidden="true" style={{ aspectRatio: '3 / 4' }}>
-                <div className={s.mediaInner}>
-                    <ProductImage
-                        imageKey={p.image}
-                        alt={p.name || 'Фото товару'}
-                        basePath="/images/products"
-                        // продуктивність
-                        fetchPriority={priority ? 'high' : 'auto'}
-                        loading={priority ? 'eager' : 'lazy'}
-                        decoding="async"
-                        // адаптивність (передай далі в <img sizes=..., srcSet=...> всередині ProductImage)
-                        sizes={DEFAULT_SIZES}
-                        // опційно: якщо ProductImage вміє, підкинь готові ширини
-                        // srcSetWidths={[320, 480, 640, 800, 1000, 1400]}
-                        // width/height (якщо ProductImage пробрасыває на <img>) — корисно для CLS
-                        // width={800} height={1067}
-                        // опційно: blur-плейсхолдер
-                        // placeholder="blur" blurDataURL={p.previewBlurDataUrl}
-                    />
+            <div className={s.body}>
+                {/* Фіксуємо геометрію, щоб уникнути CLS */}
+                <div className={s.media} aria-hidden="true" style={{ aspectRatio: '3 / 4' }}>
+                    <div className={s.mediaInner}>
+                        <ProductImage
+                            imageKey={p.image}
+                            alt={p.name || 'Фото товару'}
+                            basePath="/images/products"
+                            fetchPriority={priority ? 'high' : 'auto'}
+                            loading={priority ? 'eager' : 'lazy'}
+                            decoding="async"
+                            sizes={sizes}
+                            {...imgProps}
+                        />
+                    </div>
                 </div>
-            </div>
 
-            <Title level={5} className={s.title}>{p.name}</Title>
-        </Card>
+                <TitleTag className={s.title}>{p.name}</TitleTag>
+            </div>
+        </Tag>
     );
 }
 
-const ProductCard = memo(ProductCardBase);
-export default ProductCard;
+export default memo(ProductCardBase);

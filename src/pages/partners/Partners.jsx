@@ -22,7 +22,6 @@ const partners = [
 ];
 
 export default function PartnersPage() {
-
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>Наші партнери</h1>
@@ -30,18 +29,21 @@ export default function PartnersPage() {
                 Ми пишаємося співпрацею з провідними компаніями світу
             </p>
 
-            <div className={styles.grid}>
-                {partners.map((partner) => (
-                    <div key={partner.id} className={styles.card}>
-                        <img
-                            src={partner.logo}
-                            alt={partner.name}
-                            className={styles.logo}
-                        />
-                        <span></span>
-                    </div>
+            <div className={styles.grid} /* або styles.gridScroll для свайпу */>
+                {partners.map(p => (
+                    <img
+                        key={p.id}
+                        src={p.logo}
+                        alt={p.name}
+                        className={styles.logo}
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 480px) 33vw, (max-width: 768px) 25vw, 140px"
+                        draggable={false}
+                    />
                 ))}
             </div>
+
         </div>
     );
 }

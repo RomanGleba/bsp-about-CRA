@@ -8,6 +8,7 @@ export default function ProductImage({
                                          basePath = '/images/products',     // public/images/products
                                          width,
                                          height,
+                                         sizes = "100vw",
                                          style,
                                          loading = 'lazy',
                                          decoding = 'async',
@@ -29,13 +30,15 @@ export default function ProductImage({
             className={className}
             width={width}
             height={height}
+            sizes={sizes}
             loading={loading}
             decoding={decoding}
             fetchPriority={fetchPriority}
-            style={{ maxWidth: '100%', height: 'auto', objectFit: 'contain', ...style }}
-            onError={(e) => {
-                if (e.currentTarget.src !== placeholder) e.currentTarget.src = placeholder;
-            }}
+            referrerPolicy="no-referrer"
+            draggable={false}
+            style={{ maxWidth:"100%", height:"auto", objectFit:"contain", ...style }}
+            onError={(e)=>{ if (e.currentTarget.src !== placeholder) e.currentTarget.src = placeholder; }}
         />
+
     );
 }

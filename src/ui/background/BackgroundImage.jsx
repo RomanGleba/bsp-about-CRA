@@ -1,36 +1,13 @@
 import React from "react";
-import style from "./Background.module.scss";
+import s from "./BackgroundImage.module.scss";
 
-export default function BackgroundImage({
-                                            mobileWebp,
-                                            mobileJpg,
-                                            tabletWebp,
-                                            tabletJpg,
-                                            desktopWebp,
-                                            desktopJpg,
-                                            alt,
-                                        }) {
+export default function BackgroundImageOne({ webp, jpg, alt }) {
+    const fallback = jpg || webp;
+
     return (
-        <picture className={style.bgWrap}>
-            {/* mobile */}
-            <source media="(max-width: 767px)" srcSet={mobileWebp} type="image/webp" />
-            <source media="(max-width: 767px)" srcSet={mobileJpg} />
-
-            {/* tablet */}
-            <source media="(max-width: 1199px)" srcSet={tabletWebp} type="image/webp" />
-            <source media="(max-width: 1199px)" srcSet={tabletJpg} />
-
-            {/* desktop */}
-            <source media="(min-width: 1200px)" srcSet={desktopWebp} type="image/webp" />
-
-            <img
-                src={desktopJpg}
-                alt={alt}
-                className={style.bg}
-                loading="eager"
-                fetchpriority="high"
-                decoding="async"
-            />
+        <picture className={s.bgWrap}>
+            {webp && <source srcSet={webp} type="image/webp" />}
+            <img className={s.bg} src={fallback} alt={alt} loading="eager" />
         </picture>
     );
 }

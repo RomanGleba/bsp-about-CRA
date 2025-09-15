@@ -1,103 +1,81 @@
 .container {
-  padding: 60px 20px;
+  padding: clamp(24px, 6vw, 60px) clamp(12px, 4vw, 20px);
   text-align: center;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: clamp(1.375rem, 4.5vw, 2.5rem);
   font-weight: 700;
-  margin-bottom: 10px;
+  margin: 0 0 6px;
   color: #222;
 }
 
 .subtitle {
-  font-size: 1.2rem;
+  font-size: clamp(0.95rem, 3.3vw, 1.2rem);
   color: #666;
-  margin-bottom: 40px;
+  margin: 0 0 clamp(16px, 6vw, 40px);
 }
 
+/* Адаптивна, щільна сітка без карток */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 30px;
+  /* плитка під ширину екрана з розумними межами */
+  grid-template-columns: repeat(auto-fit, minmax(clamp(90px, 28vw, 160px), 1fr));
+  gap: clamp(10px, 4vw, 30px);
   align-items: center;
+  justify-items: center;
 }
 
-.card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  padding: 20px;
+/* Альтернатива, якщо партнерів дуже багато: горизонтальний свайп на мобілці */
+/*
+.gridScroll {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(90px, 28vw, 160px);
+  gap: clamp(12px, 4vw, 24px);
+  align-items: center;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px;
+  scrollbar-width: none;
 }
+.gridScroll::-webkit-scrollbar { display: none; }
+*/
 
 .logo {
-  max-width: 120px;
-  max-height: 100px;
-  margin: 0 auto 10px;
-  display: block;
+  /* контрольована ширина/висота, щоб логотипи не «стриба́ли» */
+  width: clamp(80px, 26vw, 140px);
+  height: clamp(32px, 10vw, 64px);
   object-fit: contain;
+  display: block;
+  /* трішки згладжуємо візуально на мобільному */
+  filter: grayscale(20%);
+  opacity: .95;
+  transition: filter .2s ease, opacity .2s ease, transform .2s ease;
+  touch-action: manipulation;
+  user-select: none;
 }
 
-
-
-/* ====== адаптація ====== */
-
-/* планшети */
-@media (max-width: 1024px) {
-  .title {
-    font-size: 2rem;
-  }
-  .subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 32px;
-  }
-  .grid {
-    gap: 24px;
-  }
+.logo:active,
+.logo:hover {
+  filter: none;
+  opacity: 1;
+  transform: translateY(-1px);
 }
 
-/* мобільні */
-@media (max-width: 768px) {
-  .container {
-    padding: 40px 16px;
-  }
-  .title {
-    font-size: 1.75rem;
-  }
-  .subtitle {
-    font-size: 1rem;
-    margin-bottom: 24px;
-  }
-  .grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 20px;
-  }
+/* Дуже маленькі екрани */
+@media (max-width: 380px) {
+  .grid { gap: 12px; }
   .logo {
-    max-width: 100px;
-    max-height: 50px;
+    width: clamp(72px, 32vw, 110px);
+    height: clamp(28px, 9vw, 54px);
   }
-
 }
 
-/* дуже маленькі екрани */
-@media (max-width: 480px) {
-  .container {
-    padding: 32px 12px;
-  }
-  .title {
-    font-size: 1.5rem;
-  }
-  .subtitle {
-    font-size: 0.9rem;
-  }
-  .grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 16px;
-  }
-  .logo {
-    max-width: 80px;
-    max-height: 80px;
-  }
+/* доступність */
+@media (prefers-reduced-motion: reduce) {
+  .logo { transition: none !important; }
 }
