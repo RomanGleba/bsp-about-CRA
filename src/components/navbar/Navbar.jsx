@@ -1,26 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { PhoneOutlined, CloseOutlined } from '@ant-design/icons';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { PhoneOutlined, MenuOutlined, CloseOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import LangSwitcher from '../lang/LangSwitcher';
 import Logo from '../../ui/logo/Logo.jsx';
 import s from './Navbar.module.scss';
 
-function IconBurger({ size = 22, className = '' }) {
-    return (
-        <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 7.5h16M4 12h16M4 16.5h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-        </svg>
-    );
-}
-
 export default function Navbar() {
     const { pathname } = useLocation();
+    const navigate = useNavigate();
     const { t } = useTranslation();
 
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
 
     const navItems = useMemo(
         () => [
@@ -28,14 +20,12 @@ export default function Navbar() {
             { key: '/products', label: t('header.products'), to: '/products' },
             { key: '/partners', label: t('header.partners'), to: '/partners' },
             { key: '/contacts', label: t('header.contacts'), to: '/contacts' },
-            { key: 'marketplace', label: t('header.marketplace'), external: 'https://your-marketplace-link.com' },
         ],
         [t]
     );
 
     const activeKey = useMemo(() => {
         const match = navItems
-            .filter((i) => i.to)
             .map((i) => i.key)
             .filter((k) => pathname === k || pathname.startsWith(k + '/'))
             .sort((a, b) => b.length - a.length)[0];
@@ -44,14 +34,9 @@ export default function Navbar() {
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 2);
-        const onResize = () => setIsMobile(window.innerWidth < 992);
-        onScroll(); onResize();
+        onScroll();
         window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onResize);
-        return () => {
-            window.removeEventListener('scroll', onScroll);
-            window.removeEventListener('resize', onResize);
-        };
+        return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
     useEffect(() => {
@@ -67,6 +52,8 @@ export default function Navbar() {
         return () => window.removeEventListener('keydown', onKey);
     }, [open]);
 
+    const toContacts = () => navigate('/contacts');
+
     return (
         <header className={`${s.header} ${scrolled ? s.scrolled : ''}`} role="banner">
             <div className={s.inner}>
@@ -79,20 +66,14 @@ export default function Navbar() {
                     <ul className={s.menu}>
                         {navItems.map((i) => (
                             <li key={i.key}>
-                                {i.external ? (
-                                    <a href={i.external} target="_blank" rel="noopener noreferrer" className={s.navLink}>
-                                        {i.label}
-                                    </a>
-                                ) : (
-                                    <NavLink
-                                        to={i.to}
-                                        className={({ isActive }) =>
-                                            isActive || activeKey === i.key ? `${s.navLink} ${s.navLinkActive}` : s.navLink
-                                        }
-                                    >
-                                        {i.label}
-                                    </NavLink>
-                                )}
+                                <NavLink
+                                    to={i.to}
+                                    className={({ isActive }) =>
+                                        isActive || activeKey === i.key ? `${s.navLink} ${s.navLinkActive}` : s.navLink
+                                    }
+                                >
+                                    {i.label}
+                                </NavLink>
                             </li>
                         ))}
                     </ul>
@@ -100,37 +81,35 @@ export default function Navbar() {
 
                 {/* Actions */}
                 <div className={s.actions}>
-                    <div className={s.onlyDesktop}>
-                        <LangSwitcher />
-                    </div>
+                    {/* Єдиний LangSwitcher (іконка-планета) */}
+                    <LangSwitcher mobileMode />
 
-                    {isMobile && (
-                        <div className={s.onlyMobile}>
-                            <LangSwitcher mobileMode />
-                        </div>
-                    )}
-
-                    <a href="tel:+380979445353" className={s.cta} aria-label={t('header.contact')}>
+                    <a
+                        href="tel:+380979445353"
+                        className={s.cta}
+                        aria-label={t('header.contact')}
+                    >
                         <PhoneOutlined className={s.icon} />
                         <span>{t('header.contact')}</span>
                     </a>
 
                     <button
+                        type="button"
                         className={`${s.burger} ${s.btnIcon}`}
                         aria-label={t('header.menu') || 'Меню'}
                         aria-expanded={open ? 'true' : 'false'}
                         aria-controls="mobile-menu"
                         onClick={() => setOpen(true)}
                     >
-                        <IconBurger />
+                        <MenuOutlined />
                     </button>
                 </div>
             </div>
 
-            {/* Mobile menu — fullscreen */}
+            {/* MOBILE FULLSCREEN MENU */}
             <aside
                 id="mobile-menu"
-                className={`${s.sidebar} ${open ? s.sidebarOpen : ''}`}
+                className={`${s.sidebar} ${open ? s.open : ''}`}
                 role="dialog"
                 aria-modal="true"
                 aria-label={t('header.menu') || 'Меню'}
@@ -138,52 +117,44 @@ export default function Navbar() {
             >
                 <div className={s.sidebarHeader}>
                     <Link to="/" className={s.logo} onClick={() => setOpen(false)} aria-label="На головну">
-                        {/* Збільшене лого */}
-                        <Logo width={150} height={56} compact />
+                        <Logo width={130} height={36} compact />
                     </Link>
-                    <button className={`${s.btnIcon} ${s.closeBtn}`} aria-label="Закрити меню" onClick={() => setOpen(false)}>
+                    <button
+                        type="button"
+                        className={`${s.btnIcon} ${s.closeBtn}`}
+                        aria-label="Закрити меню"
+                        onClick={() => setOpen(false)}
+                    >
                         <CloseOutlined />
                     </button>
                 </div>
 
                 <div className={s.sidebarTop}>
                     <LangSwitcher mobileMode />
-                    <a
-                        href="tel:+380979445353"
+                    <button
+                        type="button"
                         className={`${s.cta} ${s.ctaMobile}`}
+                        onClick={() => { setOpen(false); toContacts(); }}
                         aria-label={t('header.contact')}
-                        onClick={() => setOpen(false)}
                     >
                         <PhoneOutlined className={s.icon} />
                         <span>{t('header.contact')}</span>
-                    </a>
+                    </button>
                 </div>
 
                 <nav className={s.sidebarNav} aria-label="Мобільна навігація">
                     <ul>
                         {navItems.map((i) => (
                             <li key={i.key}>
-                                {i.external ? (
-                                    <a
-                                        href={i.external}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={s.navLink}
-                                        onClick={() => setOpen(false)}
-                                    >
-                                        {i.label}
-                                    </a>
-                                ) : (
-                                    <NavLink
-                                        to={i.to}
-                                        onClick={() => setOpen(false)}
-                                        className={({ isActive }) =>
-                                            isActive || activeKey === i.key ? `${s.navLink} ${s.navLinkActive}` : s.navLink
-                                        }
-                                    >
-                                        {i.label}
-                                    </NavLink>
-                                )}
+                                <NavLink
+                                    to={i.to}
+                                    onClick={() => setOpen(false)}
+                                    className={({ isActive }) =>
+                                        isActive || activeKey === i.key ? `${s.navLink} ${s.navLinkActive}` : s.navLink
+                                    }
+                                >
+                                    {i.label}
+                                </NavLink>
                             </li>
                         ))}
                     </ul>
