@@ -101,10 +101,14 @@ $mint: #eaf3ee;
   border-bottom: 1px solid rgba(0,0,0,.08);
 }
 
-/* верхній ряд */
+/* верхній ряд — елементи ВПРАВО */
 .sidebarTop{
   display:flex; align-items:center; gap:10px;
   padding:14px 16px; border-bottom:1px dashed rgba(0,0,0,.06);
+
+  /* головне: вирівнюємо контент вправо */
+  justify-content: flex-end;
+  width: 100%;
 
   .ctaMobile{
     display:inline-flex; align-items:center; justify-content:center; gap:6px;

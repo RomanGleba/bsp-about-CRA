@@ -81,18 +81,11 @@ export default function Navbar() {
 
                 {/* Actions */}
                 <div className={s.actions}>
-                    {/* Єдиний LangSwitcher (іконка-планета) */}
                     <LangSwitcher mobileMode />
-
-                    <a
-                        href="tel:+380979445353"
-                        className={s.cta}
-                        aria-label={t('header.contact')}
-                    >
+                    <a href="tel:+380979445353" className={s.cta} aria-label={t('header.contact')}>
                         <PhoneOutlined className={s.icon} />
                         <span>{t('header.contact')}</span>
                     </a>
-
                     <button
                         type="button"
                         className={`${s.burger} ${s.btnIcon}`}
