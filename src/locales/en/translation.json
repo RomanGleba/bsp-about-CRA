@@ -4,7 +4,9 @@
     "products": "Products",
     "about": "About",
     "contacts": "Contacts",
-    "contact": "Contacts"
+    "contact": "Contacts",
+    "marketplace": "our store",
+    "partners": "our partners"
   },
   "home": {
     "slogan": "BSP GROUP — Caring Together",
@@ -31,5 +33,11 @@
   "contacts": {
     "title": "Contacts",
     "form": { "name": "Your name", "email": "Email", "message": "Message", "send": "Send" }
+  },
+
+  "partners": {
+    "title": "Our Partners",
+    "subtitle": "We are proud to cooperate with leading companies worldwide"
   }
 }
+

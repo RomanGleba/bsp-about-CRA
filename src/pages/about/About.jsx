@@ -17,21 +17,29 @@ import s from './About.module.scss';
 const { Title, Paragraph, Text } = Typography;
 
 /* ========== helpers for brand logos ========== */
+/** Нормалізуємо рядок в ключ: латиниця, цифри; прибираємо діакритику/знаки. */
 const normBrandKey = (v = '') =>
-    v.toString().trim().toLowerCase().replace(/\s+/g, '-');
+    String(v)
+        .normalize('NFKD')                         // знімаємо діакритику
+        .replace(/[\u0300-\u036f]/g, '')           // комбінуючі знаки
+        .toLowerCase()
+        .replace(/[\u2019\u2018\u201A\uFF07']/g, '') // різні апострофи
+        .replace(/[^a-z0-9]+/g, '-')               // все не a-z0-9 -> дефіс
+        .replace(/^-+|-+$/g, '')                   // обрізаємо краї
+        .replace(/-+/g, '-');                      // стискаємо дефіси
 
-/* ===== Підтягуємо всі лого з src/assets/brands/* (працює і у Vite, і у Webpack) ===== */
+/* ===== Підтягуємо всі лого з src/assets/brands/* (Vite/Webpack) ===== */
 const brandAssetsMap = (() => {
     const map = {};
 
-    // Vite / modern bundlers
+    // Vite / modern
     try {
         // eslint-disable-next-line no-undef
         if (typeof import.meta !== 'undefined' && import.meta.glob) {
             // @ts-ignore
             const mods = import.meta.glob('../../assets/brands/*.{png,jpg,jpeg,webp,svg}', {
                 eager: true,
-                as: 'url'
+                as: 'url',
             });
             for (const p in mods) {
                 const file = p.split('/').pop() || '';
@@ -45,7 +53,7 @@ const brandAssetsMap = (() => {
             }
             return map;
         }
-    } catch { /* noop */ }
+    } catch {}
 
     // Webpack (CRA)
     try {
@@ -60,7 +68,7 @@ const brandAssetsMap = (() => {
             map[dash] = url;
             map[tight] = url;
         });
-    } catch { /* папки може не бути — ок */ }
+    } catch {}
 
     return map;
 })();
@@ -72,13 +80,14 @@ const resolveBrandLogo = (name = '') => {
     return (
         brandAssetsMap[dash] ||
         brandAssetsMap[tight] ||
-        `${process.env.PUBLIC_URL}/images/brands/${dash}.webp` // fallback у public
+        `${process.env.PUBLIC_URL || ''}/images/brands/${dash}.webp` // fallback у public
     );
 };
 
 const Para = React.memo(({ children, className }) =>
     children ? <Paragraph className={className || s.text}>{children}</Paragraph> : null
 );
+
 
 const StatStrip = React.memo(({ stats = [] }) => {
     if (!stats?.length) return null;
@@ -116,9 +125,10 @@ const BrandGrid = React.memo(({ title, names = [] }) => {
                             decoding="async"
                             onError={(e) => {
                                 const img = e.currentTarget; img.onerror = null;
+                                // розумні підстановки: webp -> png -> jpg -> placeholder
                                 if (/\.webp($|\?)/i.test(img.src)) { img.src = img.src.replace(/\.webp/i, '.png'); return; }
                                 if (/\.png($|\?)/i.test(img.src))  { img.src = img.src.replace(/\.png/i,  '.jpg'); return; }
-                                img.src = `${process.env.PUBLIC_URL}/images/brands/placeholder.webp`;
+                                img.src = `${process.env.PUBLIC_URL || ''}/images/brands/placeholder.webp`;
                             }}
                         />
                     </li>
@@ -175,10 +185,7 @@ export default function About() {
     ].filter(Boolean);
 
     return (
-        <main
-            className={s.page}
-            style={{ '--hero-shift': '200px', '--content-shift': '200px' }}
-        >
+        <main className={s.page} style={{ '--hero-shift': '200px', '--content-shift': '200px' }}>
             {/* HERO з фоном */}
             <section className={s.hero} aria-labelledby="about-title">
                 <BackgroundImage {...backgrounds.about} />
@@ -207,7 +214,7 @@ export default function About() {
                         <BrandGrid title={labels?.own || 'Власні ТМ'} names={own} />
                         <BrandGrid title={labels?.ua || 'Ексклюзивні ТМ в Україні'} names={ua} />
                         <BrandGrid title={labels?.regions || 'Ексклюзивні ТМ у регіонах'} names={regions} />
-                        {note && <Para className={s.note}>{note}</Para>}
+                        {note && <Paragraph className={s.note}>{note}</Paragraph>}
                     </section>
 
                     <div className={s.timeline}>
@@ -220,7 +227,7 @@ export default function About() {
                                         <span className={s.icon}>{b.icon}</span>
                                         <Title level={3} className={s.h3}>{b.title}</Title>
                                     </div>
-                                    <Para>{b.text}</Para>
+                                    <Paragraph className={s.text}>{b.text}</Paragraph>
                                 </div>
                             </article>
                         ))}

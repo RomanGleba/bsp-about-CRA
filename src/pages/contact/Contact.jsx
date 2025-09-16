@@ -1,19 +1,26 @@
 import React from 'react';
-import { Card, Typography } from 'antd';
-import { PhoneOutlined, MailOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import {
+    PhoneOutlined,
+    MailOutlined,
+    EnvironmentOutlined,
+} from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import InstagramLink from '../../ui/logo/socialNetwork/InstagramLink';
 import s from './Contact.module.scss';
 
-const { Title, Paragraph, Text } = Typography;
-
-
 const CONTACTS = {
     phone: '+380979445353',
-    email: 'info@bsp-group.ua ',
-    address: 'Україна, Закарпатська обл., м. Ужгород, вул. Трудова, 2 ',
+    email: 'info@bsp-group.ua',
+    address: 'Україна, Закарпатська обл., м. Ужгород, вул. Трудова, 2',
     instagramLabel: 'Instagram',
 };
+
+const telHref = (p) => `tel:${String(p).replace(/[^\d+]/g, '')}`;
+const mailHref = (e) => `mailto:${String(e).trim()}`;
+const mapsHref = (addr) =>
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        String(addr).trim()
+    )}`;
 
 export default function Contacts() {
     const { t } = useTranslation();
@@ -22,60 +29,73 @@ export default function Contacts() {
         <section className={s.section} aria-labelledby="contacts-title">
             <div className={s.container}>
                 <header className={s.header}>
-                    <Title id="contacts-title" level={1} className={s.h1}>
+                    <h1 id="contacts-title" className={s.h1}>
                         {t('contacts.title', 'Контакти')}
-                    </Title>
-                    <Paragraph className={s.lead}>
-                        {t('contacts.lead', 'Ми завжди на звʼязку. Оберіть зручний спосіб — і напишіть або подзвоніть.')}
-                    </Paragraph>
+                    </h1>
+                    <p className={s.lead}>
+                        {t(
+                            'contacts.lead',
+                            'Ми завжди на звʼязку. Оберіть зручний спосіб — і напишіть або подзвоніть.'
+                        )}
+                    </p>
                 </header>
 
-                <Card variant="outlined" className={s.card} styles={{ body: { padding: 20 } }}>
-                    <ul className={s.list} aria-label={t('contacts.title', 'Контакти')}>
-                        <li className={s.item}>
-                            <PhoneOutlined className={s.icon} />
-                            <div className={s.itemBody}>
-                                <span className={s.label}>{t('contacts.phone', 'Телефон')}</span>
-                                <a
-                                    href={`tel:${CONTACTS.phone.replace(/\s+/g, '')}`}
-                                    className={s.link}
-                                >
-                                    {CONTACTS.phone}
-                                </a>
-                            </div>
-                        </li>
+                <ul className={s.list} aria-label={t('contacts.title', 'Контакти')}>
+                    <li className={s.item}>
+            <span className={s.icon}>
+              <PhoneOutlined />
+            </span>
+                        <div className={s.body}>
+                            <span className={s.label}>{t('contacts.phone', 'Телефон')}</span>
+                            <a href={telHref(CONTACTS.phone)} className={s.link}>
+                                {CONTACTS.phone}
+                            </a>
+                        </div>
+                    </li>
 
-                        <li className={s.item}>
-                            <MailOutlined className={s.icon} />
-                            <div className={s.itemBody}>
-                                <span className={s.label}>Email</span>
-                                <a href={`mailto:${CONTACTS.email}`} className={s.link}>
-                                    {CONTACTS.email}
-                                </a>
-                            </div>
-                        </li>
+                    <li className={s.item}>
+            <span className={s.icon}>
+              <MailOutlined />
+            </span>
+                        <div className={s.body}>
+                            <span className={s.label}>Email</span>
+                            <a href={mailHref(CONTACTS.email)} className={s.link}>
+                                {CONTACTS.email}
+                            </a>
+                        </div>
+                    </li>
 
-                        <li className={s.item}>
-                            <EnvironmentOutlined className={s.icon} />
-                            <div className={s.itemBody}>
-                                <span className={s.label}>{t('contacts.address', 'Адреса')}</span>
-                                <Text className={s.text}>{CONTACTS.address}</Text>
-                            </div>
-                        </li>
+                    <li className={s.item}>
+            <span className={s.icon}>
+              <EnvironmentOutlined />
+            </span>
+                        <div className={s.body}>
+                            <span className={s.label}>{t('contacts.address', 'Адреса')}</span>
+                            <a
+                                href={mapsHref(CONTACTS.address)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={s.link}
+                            >
+                                {CONTACTS.address}
+                            </a>
+                        </div>
+                    </li>
 
-                        <li className={`${s.item} ${s.itemInline}`}>
-                            <InstagramLink className={s.ig} size={22} />
-                            <div className={s.itemBody}>
-                                <span className={s.label}>{t('contacts.social', 'Соціальні мережі')}</span>
-                                <Text className={s.text}>{CONTACTS.instagramLabel}</Text>
-                            </div>
-                        </li>
-                    </ul>
+                    <li className={`${s.item} ${s.itemInline}`}>
+            <span className={s.iconGhost}>
+              <InstagramLink className={s.ig} size={20} />
+            </span>
+                        <div className={s.body}>
+                            <span className={s.label}>{t('contacts.social', 'Соцмережі')}</span>
+                            <span className={s.text}>{CONTACTS.instagramLabel}</span>
+                        </div>
+                    </li>
+                </ul>
 
-                    <Paragraph className={s.note}>
-                        {t('contacts.note', 'Графік: Пн–Пт, 09:00–18:00')}
-                    </Paragraph>
-                </Card>
+                <p className={s.note}>
+                    {t('contacts.note', 'Графік: Пн–Пт, 09:00–18:00')}
+                </p>
             </div>
         </section>
     );

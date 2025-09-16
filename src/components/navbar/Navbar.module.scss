@@ -1,7 +1,7 @@
-$lg: 992px;
-$md: 768px;
-$sm: 576px;
-$xs: 400px;
+$lg: 992px;  // desktop
+$md: 768px;  // tablets
+$sm: 576px;  // phones
+$xs: 400px;  // very small phones
 
 $green: #16a34a;
 $green-600: #15803d;
@@ -9,9 +9,7 @@ $mint: #eaf3ee;
 
 /* HEADER */
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  position: sticky; top: 0; z-index: 1000;
   background: rgba(255,255,255,.9);
   backdrop-filter: blur(8px) saturate(140%);
   border-bottom: 1px solid rgba(0,0,0,.05);
@@ -20,13 +18,9 @@ $mint: #eaf3ee;
 .scrolled { background: rgba(255,255,255,.95); box-shadow: 0 10px 24px rgba(0,0,0,.06); }
 
 .inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 16px;
+  max-width: 1200px; margin: 0 auto;
+  height: 64px; display: flex; align-items: center;
+  padding: 0 14px; gap: 16px;
 
   @media (max-width: $md) { height: 60px; padding: 0 12px; gap: 12px; }
   @media (max-width: $sm) { height: 56px; padding: 0 10px; gap: 10px; }
@@ -37,19 +31,14 @@ $mint: #eaf3ee;
 .logoShift { transform: translate(-10px, 20px); }
 
 /* DESKTOP NAV */
-.navDesktop { flex: 1; display: none; margin-left: 8px; @media (min-width: $lg) { display: block; } }
+.navDesktop { flex: 1; display: none; margin-left: 8px;
+  @media (min-width: $lg) { display: block; } }
 .menu { display: flex; gap: 10px; align-items: center; list-style: none; margin: 0; padding: 0; }
 
 .navLink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 10px;
-  min-width: 112px;
-  color: #222;
-  font-weight: 500;
-  text-decoration: none;
-  border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 8px 10px; min-width: 112px; white-space: nowrap;
+  color: #222; font-weight: 500; text-decoration: none; border-radius: 10px;
   transition: color .15s ease, background .15s ease;
 }
 .navLink:hover { color: $green; background: #eef3f0; }
@@ -59,20 +48,12 @@ $mint: #eaf3ee;
 .actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
 .onlyDesktop { display: flex; align-items: center; gap: 10px; }
 @media (max-width: $lg) { .onlyDesktop { display: none; } }
-
 .onlyMobile { display: none; @media (max-width: $lg) { display: flex; align-items: center; } }
 
 /* CTA */
 .cta {
-  flex: 0 0 auto;
-  height: 36px;
-  padding: 0 14px;
-  min-width: 128px;
-  font-weight: 600;
-  border-radius: 999px;
-  background: $green;
-  color: #fff;
-  text-decoration: none;
+  flex: 0 0 auto; height: 36px; padding: 0 14px; min-width: 128px; font-weight: 600;
+  border-radius: 999px; background: $green; color: #fff; text-decoration: none;
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
 
   .icon { font-size: 16px; }
@@ -80,110 +61,85 @@ $mint: #eaf3ee;
 }
 .cta:hover { background: $green-600; }
 
-/* ICON BUTTONS */
-.btnIcon {
-  border: 0 !important;
-  background: transparent !important;
-  padding: 6px;
-  line-height: 0;
-  border-radius: 0;
-  color: #222;
+/* Burger / Close — для мобілок робимо 44×44 */
+.burger, .closeBtn {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; margin: 0; border: none; background: transparent; color: #222; cursor: pointer;
+  svg { width: 22px; height: 22px; }
+  &:focus { outline: none; } &:focus-visible { outline: 2px solid rgba(0,0,0,.3); outline-offset: 2px; }
 
-  svg { display: block; width: 22px; height: 22px; }
-
-  &:hover, &:active { background: transparent !important; }
-  &:focus { outline: none; }
-  &:focus-visible { outline: 2px solid rgba(0,0,0,.3); outline-offset: 2px; }
+  @media (max-width: $sm) { width: 44px; height: 44px; } /* ↑ телефони */
 }
+@media (min-width: $lg) { .burger { display: none; } }
 
-/* Burger */
-.burger { padding: 0; display: inline-flex; @media (min-width: $lg) { display: none; } }
-
-/* ============ MOBILE FULLSCREEN MENU ============ */
+/* ===== MOBILE FULLSCREEN MENU ===== */
 .sidebar {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100dvh;
-  z-index: 2000;
-
+  position: fixed; inset: 0; width: 100vw; height: 100dvh; z-index: 2000;
   background: rgba(255,255,255,0.96);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
-  display: flex;
-  flex-direction: column;
-
-  opacity: 0;
-  transform: translateY(6px);
-  pointer-events: none;
-  transition: opacity .26s ease, transform .26s ease;
-
-  padding: 20px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  transform: translateX(100%); transition: transform .3s ease;
+  display: flex; flex-direction: column;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain; /* не прокручуємо фон під меню */
 }
-.sidebarOpen {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
+.open { transform: translateX(0); }
 
 .sidebarHeader {
   display: flex; justify-content: space-between; align-items: center;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(0,0,0,.08);
+  padding: 4px 4px 12px; border-bottom: 1px solid rgba(0,0,0,.08);
 }
 
-/* верхній ряд: ПРАВОРУЧ + 20px */
 .sidebarTop {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 0;
-  border-bottom: 1px dashed rgba(0,0,0,.06);
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 0; border-bottom: 1px dashed rgba(0,0,0,.06);
 
-  justify-content: flex-end;
-  padding-inline-end: 20px;
+  justify-content: flex-end;       /* вправо */
+  padding-right: 20px;             /* 20px від правого краю */
 
   .ctaMobile {
-    height: 34px;
-    padding: 0 10px;
-    min-width: 112px;
-    border-radius: 999px;
-    background: $green;
-    color: #fff;
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    height: 34px; padding: 0 10px; min-width: 112px; border-radius: 999px;
+    background: $green; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     text-decoration: none;
   }
 }
 
 .sidebarNav {
   padding: 18px 0 24px;
+
   ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
 
+  /* пункти як у прикладі, адаптовані для телефонів */
   a {
-    display: block;
-    padding: 12px 14px;
+    display: block; width: 100%;
+    padding: 14px 16px;
+    min-height: 44px; /* tap-friendly */
     border-radius: 12px;
-    font-size: 16.5px;
     font-weight: 600;
-    text-decoration: none;
-    color: #222;
-    background: #fff;
+    font-size: clamp(16px, 3.9vw, 18px); /* читабельність на малих екранах */
+    text-decoration: none; color: #222; background: #fff;
     box-shadow: 0 1px 0 rgba(0,0,0,.04);
-    transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
   }
+
   a:hover { background: #f3f6f4; color: $green; }
+  a:focus-visible { outline: 2px solid rgba(22,163,74,.35); outline-offset: 2px; }
+  a:active { background: #eef3ef; }
 
   .navLinkActive {
-    background: $mint;
-    color: $green;
-    box-shadow: 0 0 0 1px rgba(22,163,74,.16) inset;
+    background: $mint; color: $green;
+    box-shadow: 0 0 0 1px rgba(22,163,74,.18) inset;
+  }
+
+  /* на дуже малих телефонах даємо трішки більше висоти */
+  @media (max-width: $xs) {
+    a { min-height: 48px; }
   }
 }
 
-/* very small phones */
-@media (max-width: $xs) {
-  .cta { min-width: 120px; padding: 0 10px; }
+/* дрібні покращення */
+html { scrollbar-gutter: stable; }
+@media (prefers-reduced-motion: reduce) {
+  .sidebar { transition: none; }
 }

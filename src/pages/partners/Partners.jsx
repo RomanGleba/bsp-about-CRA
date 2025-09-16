@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './Partners.module.scss';
 
 import Epicentrk from '../../assets/partners/Epicentrk.svg';
@@ -22,15 +23,19 @@ const partners = [
 ];
 
 export default function PartnersPage() {
+    const { t } = useTranslation();
+
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>Наші партнери</h1>
+            <h1 className={styles.title}>
+                {t('partners.title', 'Наші партнери')}
+            </h1>
             <p className={styles.subtitle}>
-                Ми пишаємося співпрацею з провідними компаніями світу
+                {t('partners.subtitle', 'Ми пишаємося співпрацею з провідними компаніями світу')}
             </p>
 
-            <div className={styles.grid} /* або styles.gridScroll для свайпу */>
-                {partners.map(p => (
+            <div className={styles.grid}>
+                {partners.map((p) => (
                     <img
                         key={p.id}
                         src={p.logo}
@@ -43,7 +48,6 @@ export default function PartnersPage() {
                     />
                 ))}
             </div>
-
         </div>
     );
 }

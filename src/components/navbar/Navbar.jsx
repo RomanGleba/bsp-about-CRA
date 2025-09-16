@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { PhoneOutlined, CloseOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,7 @@ export default function Navbar() {
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const triggerRef = useRef(null);
 
     const navItems = useMemo(
         () => [
@@ -48,24 +49,26 @@ export default function Navbar() {
         onScroll(); onResize();
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', onResize);
-        return () => {
-            window.removeEventListener('scroll', onScroll);
-            window.removeEventListener('resize', onResize);
-        };
+        return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onResize); };
     }, []);
 
+    // блокувати скрол сторінки, коли відкрите меню
     useEffect(() => {
         const prev = document.body.style.overflow;
         document.body.style.overflow = open ? 'hidden' : prev || '';
         return () => { document.body.style.overflow = prev; };
     }, [open]);
 
+    // закривати по Escape
     useEffect(() => {
         if (!open) return;
         const onKey = (e) => e.key === 'Escape' && setOpen(false);
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
     }, [open]);
+
+    // закриваємо меню при зміні маршруту
+    useEffect(() => { setOpen(false); }, [pathname]);
 
     return (
         <header className={`${s.header} ${scrolled ? s.scrolled : ''}`} role="banner">
@@ -100,37 +103,31 @@ export default function Navbar() {
 
                 {/* Actions */}
                 <div className={s.actions}>
-                    <div className={s.onlyDesktop}>
-                        <LangSwitcher />
-                    </div>
+                    <div className={s.onlyDesktop}><LangSwitcher /></div>
 
-                    {isMobile && (
-                        <div className={s.onlyMobile}>
-                            <LangSwitcher mobileMode />
-                        </div>
-                    )}
+                    {isMobile && <div className={s.onlyMobile}><LangSwitcher mobileMode /></div>}
 
                     <a href="tel:+380979445353" className={s.cta} aria-label={t('header.contact')}>
-                        <PhoneOutlined className={s.icon} />
-                        <span>{t('header.contact')}</span>
+                        <PhoneOutlined className={s.icon} /><span>{t('header.contact')}</span>
                     </a>
 
                     <button
-                        className={`${s.burger} ${s.btnIcon}`}
+                        ref={triggerRef}
+                        className={s.burger}
                         aria-label={t('header.menu') || 'Меню'}
-                        aria-expanded={open ? 'true' : 'false'}
                         aria-controls="mobile-menu"
+                        aria-expanded={open ? 'true' : 'false'}
                         onClick={() => setOpen(true)}
                     >
-                        <IconBurger />
+                        <IconBurger size={22} />
                     </button>
                 </div>
             </div>
 
-            {/* Mobile menu — fullscreen */}
+            {/* MOBILE FULLSCREEN MENU */}
             <aside
                 id="mobile-menu"
-                className={`${s.sidebar} ${open ? s.sidebarOpen : ''}`}
+                className={`${s.sidebar} ${open ? s.open : ''}`}
                 role="dialog"
                 aria-modal="true"
                 aria-label={t('header.menu') || 'Меню'}
@@ -138,10 +135,9 @@ export default function Navbar() {
             >
                 <div className={s.sidebarHeader}>
                     <Link to="/" className={s.logo} onClick={() => setOpen(false)} aria-label="На головну">
-                        {/* Збільшене лого */}
                         <Logo width={150} height={56} compact />
                     </Link>
-                    <button className={`${s.btnIcon} ${s.closeBtn}`} aria-label="Закрити меню" onClick={() => setOpen(false)}>
+                    <button className={s.closeBtn} aria-label="Закрити меню" onClick={() => { setOpen(false); triggerRef.current?.focus(); }}>
                         <CloseOutlined />
                     </button>
                 </div>
