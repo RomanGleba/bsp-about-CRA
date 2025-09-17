@@ -1,3 +1,4 @@
+// PartnersPage.jsx
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import s from './Partners.module.scss';
@@ -10,6 +11,17 @@ import Velmart   from '../../assets/partners/Velmart.svg';
 import Divochin  from '../../assets/partners/divochin.svg';
 import Kasta     from '../../assets/partners/kasta.svg';
 import Maudau    from '../../assets/partners/Maudau.svg';
+
+const partners = [
+    { id: 1, name: 'Епіцентр', logo: Epicentrk },
+    { id: 2, name: 'Rozetka',  logo: Rozetka },
+    { id: 3, name: 'SPAR',     logo: Spar },
+    { id: 4, name: 'Амбар',    logo: Ambar },
+    { id: 5, name: 'Velmart',  logo: Velmart, rounded: true },
+    { id: 6, name: 'Дивоцін',  logo: Divochin, rounded: true },
+    { id: 7, name: 'Kasta',    logo: Kasta, rounded: true },
+    { id: 8, name: 'Maudau',   logo: Maudau, rounded: true },
+];
 
 export default function PartnersPage() {
     const { t } = useTranslation();
@@ -25,24 +37,14 @@ export default function PartnersPage() {
                 </header>
 
                 <div className={s.grid}>
-                    <img src={Epicentrk} alt="Епіцентр" className={`${s.logo} ${s.epicentr}`} />
-                    <img src={Rozetka}   alt="Rozetka"  className={`${s.logo} ${s.rozetka}`} />
-                    <img src={Spar}      alt="SPAR"     className={`${s.logo} ${s.spar}`} />
-                    <img src={Ambar}     alt="Амбар"    className={`${s.logo} ${s.ambar}`} />
-
-                    {/* прямокутні лого з округленням */}
-                    <div className={`${s.rounded} ${s.velmartBox}`}>
-                        <img src={Velmart}  alt="Velmart"  className={s.roundedImg} />
-                    </div>
-                    <div className={s.rounded}>
-                        <img src={Divochin} alt="Дивоцін"  className={s.roundedImg} />
-                    </div>
-                    <div className={s.rounded}>
-                        <img src={Kasta}    alt="Kasta"    className={s.roundedImg} />
-                    </div>
-                    <div className={s.rounded}>
-                        <img src={Maudau}   alt="Maudau"   className={`${s.roundedImg} ${s.maudau}`} />
-                    </div>
+                    {partners.map((p) => (
+                        <img
+                            key={p.id}
+                            src={p.logo}
+                            alt={p.name}
+                            className={`${s.logo} ${p.rounded ? s.rounded : ''}`}
+                        />
+                    ))}
                 </div>
             </div>
         </section>

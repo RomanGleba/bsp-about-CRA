@@ -1,4 +1,4 @@
-/* ===== секція з еко-бізнес фоном ===== */
+/* ===== секція ===== */
 .section {
   min-height: 100vh;
   width: 100%;
@@ -24,64 +24,41 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  column-gap: clamp(40px, 5vw, 80px);
-  row-gap: clamp(30px, 4vw, 60px);
+  column-gap: clamp(36px, 5vw, 72px);
+  row-gap: clamp(28px, 4vw, 56px);
   justify-items: center;
   align-items: center;
 }
 
-/* однакова фактична висота для всіх логотипів */
+/* базовий стиль логотипів */
 .logo {
   display: block;
-  height: clamp(200px, 20vw, 260px);
-  width: auto;
-  object-fit: contain;
+  width: clamp(220px, 24vw, 260px);
+  height: clamp(160px, 18vw, 200px);
+  object-fit: contain;    /* ✅ НЕ обрізає */
   user-select: none;
   pointer-events: none;
 }
 
-/* індивідуальні підстроювання */
-.epicentr { transform: scale(1.0); }
-.rozetka  { transform: scale(1.05); }
-.spar     { transform: scale(1.05); }
-.ambar    { transform: scale(1.0); }
-
-/* ── Rounded-блоки для прямокутних логотипів ── */
+/* скруглення тільки для вибраних */
 .rounded {
-  --inset: 10px;             /* внутрішній відступ */
-  border-radius: 500px;       /* 🔥 тепер завжди 25px */
+  border-radius: 68px;
   overflow: hidden;
-  height: clamp(200px, 20vw, 260px);
-  width: clamp(260px, 28vw, 360px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
 }
-
-.roundedImg {
-  width: calc(100% - 2 * var(--inset));
-  height: calc(100% - 2 * var(--inset));
-  object-fit: contain;   /* щоб текст не обрізався */
-  display: block;
-}
-
-/* маудоу трохи підсилюємо */
-.maudau { transform: scale(1.06); }
-
-/* велмарт — більше повітря знизу */
-.velmartBox { --inset: 14px; }
 
 /* ===== адаптив ===== */
 @media (max-width: 900px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
-  .logo, .rounded { height: clamp(170px, 24vw, 220px); }
-  .rounded { width: clamp(220px, 40vw, 300px); }
-  .epicentr, .rozetka, .spar, .ambar, .maudau { transform: none; }
+  .logo {
+    width: clamp(200px, 42vw, 240px);
+    height: clamp(150px, 28vw, 180px);
+  }
 }
 
 @media (max-width: 520px) {
-  .grid { grid-template-columns: 1fr; }
-  .logo, .rounded { height: clamp(140px, 32vw, 200px); }
-  .rounded { width: clamp(200px, 70vw, 260px); }
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .logo {
+    width: clamp(160px, 46vw, 200px);
+    height: clamp(120px, 32vw, 150px);
+  }
 }
