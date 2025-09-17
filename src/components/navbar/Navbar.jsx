@@ -14,24 +14,34 @@ export default function Navbar() {
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
+    // ===== Items (internal + external) =====
     const navItems = useMemo(
         () => [
-            { key: '/', label: t('header.home'), to: '/' },
-            { key: '/products', label: t('header.products'), to: '/products' },
-            { key: '/partners', label: t('header.partners'), to: '/partners' },
-            { key: '/contacts', label: t('header.contacts'), to: '/contacts' },
+            { key: '/',          label: t('header.home'),     to: '/' },
+            { key: '/products',  label: t('header.products'), to: '/products' },
+            { key: '/about',     label: t('header.about'),    to: '/about' },
+            { key: '/partners',  label: t('header.partners'), to: '/partners' },
+            { key: '/contacts',  label: t('header.contacts'), to: '/contacts' },
+            {
+                key: 'external',
+                label: t('header.marketplace'),
+                href: 'https://prom.ua/c3378143-lapkisvit.html',
+                external: true,
+            },
         ],
         [t]
     );
 
+    // ===== Active key only for internal routes =====
     const activeKey = useMemo(() => {
-        const match = navItems
-            .map((i) => i.key)
-            .filter((k) => pathname === k || pathname.startsWith(k + '/'))
+        const internal = navItems.filter(i => i.to).map(i => i.key);
+        const match = internal
+            .filter(k => pathname === k || pathname.startsWith(k + '/'))
             .sort((a, b) => b.length - a.length)[0];
         return match || '/';
     }, [pathname, navItems]);
 
+    // ===== Effects =====
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 2);
         onScroll();
@@ -41,7 +51,7 @@ export default function Navbar() {
 
     useEffect(() => {
         const prev = document.body.style.overflow;
-        document.body.style.overflow = open ? 'hidden' : prev || '';
+        document.body.style.overflow = open ? 'hidden' : '';
         return () => { document.body.style.overflow = prev; };
     }, [open]);
 
@@ -54,6 +64,7 @@ export default function Navbar() {
 
     const toContacts = () => navigate('/contacts');
 
+    // ===== Render =====
     return (
         <header className={`${s.header} ${scrolled ? s.scrolled : ''}`} role="banner">
             <div className={s.inner}>
@@ -66,14 +77,27 @@ export default function Navbar() {
                     <ul className={s.menu}>
                         {navItems.map((i) => (
                             <li key={i.key}>
-                                <NavLink
-                                    to={i.to}
-                                    className={({ isActive }) =>
-                                        isActive || activeKey === i.key ? `${s.navLink} ${s.navLinkActive}` : s.navLink
-                                    }
-                                >
-                                    {i.label}
-                                </NavLink>
+                                {i.external ? (
+                                    <a
+                                        href={i.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={s.navLink}
+                                    >
+                                        {i.label}
+                                    </a>
+                                ) : (
+                                    <NavLink
+                                        to={i.to}
+                                        className={({ isActive }) =>
+                                            isActive || activeKey === i.key
+                                                ? `${s.navLink} ${s.navLinkActive}`
+                                                : s.navLink
+                                        }
+                                    >
+                                        {i.label}
+                                    </NavLink>
+                                )}
                             </li>
                         ))}
                     </ul>
@@ -139,15 +163,29 @@ export default function Navbar() {
                     <ul>
                         {navItems.map((i) => (
                             <li key={i.key}>
-                                <NavLink
-                                    to={i.to}
-                                    onClick={() => setOpen(false)}
-                                    className={({ isActive }) =>
-                                        isActive || activeKey === i.key ? `${s.navLink} ${s.navLinkActive}` : s.navLink
-                                    }
-                                >
-                                    {i.label}
-                                </NavLink>
+                                {i.external ? (
+                                    <a
+                                        href={i.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={s.navLink}
+                                        onClick={() => setOpen(false)}
+                                    >
+                                        {i.label}
+                                    </a>
+                                ) : (
+                                    <NavLink
+                                        to={i.to}
+                                        onClick={() => setOpen(false)}
+                                        className={({ isActive }) =>
+                                            isActive || activeKey === i.key
+                                                ? `${s.navLink} ${s.navLinkActive}`
+                                                : s.navLink
+                                        }
+                                    >
+                                        {i.label}
+                                    </NavLink>
+                                )}
                             </li>
                         ))}
                     </ul>
