@@ -1,81 +1,87 @@
+/* ===== секція з еко-бізнес фоном ===== */
+.section {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  padding: clamp(40px, 6vw, 90px) 0;
+}
+
 .container {
-  padding: clamp(24px, 6vw, 60px) clamp(12px, 4vw, 20px);
-  text-align: center;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 0 clamp(12px, 4vw, 24px);
+  width: 100%;
 }
 
-.title {
-  font-size: clamp(1.375rem, 4.5vw, 2.5rem);
-  font-weight: 700;
-  margin: 0 0 6px;
-  color: #222;
-}
+/* заголовки */
+.heading { text-align: center; margin-bottom: clamp(24px, 6vw, 56px); }
+.title   { margin: 0 0 8px; font-weight: 800; color: #fff; font-size: clamp(1.9rem, 5vw, 3.2rem); }
+.subtitle{ margin: 0; color: #f0f0f0; font-size: clamp(1.1rem, 3.2vw, 1.35rem); }
 
-.subtitle {
-  font-size: clamp(0.95rem, 3.3vw, 1.2rem);
-  color: #666;
-  margin: 0 0 clamp(16px, 6vw, 40px);
-}
-
-/* Адаптивна, щільна сітка без карток */
+/* ===== сітка ===== */
 .grid {
   display: grid;
-  /* плитка під ширину екрана з розумними межами */
-  grid-template-columns: repeat(auto-fit, minmax(clamp(90px, 28vw, 160px), 1fr));
-  gap: clamp(10px, 4vw, 30px);
-  align-items: center;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: clamp(40px, 5vw, 80px);
+  row-gap: clamp(30px, 4vw, 60px);
   justify-items: center;
-}
-
-/* Альтернатива, якщо партнерів дуже багато: горизонтальний свайп на мобілці */
-/*
-.gridScroll {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: clamp(90px, 28vw, 160px);
-  gap: clamp(12px, 4vw, 24px);
   align-items: center;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 6px;
-  scrollbar-width: none;
 }
-.gridScroll::-webkit-scrollbar { display: none; }
-*/
 
+/* однакова фактична висота для всіх логотипів */
 .logo {
-  /* контрольована ширина/висота, щоб логотипи не «стриба́ли» */
-  width: clamp(80px, 26vw, 140px);
-  height: clamp(32px, 10vw, 64px);
-  object-fit: contain;
   display: block;
-  /* трішки згладжуємо візуально на мобільному */
-  filter: grayscale(20%);
-  opacity: .95;
-  transition: filter .2s ease, opacity .2s ease, transform .2s ease;
-  touch-action: manipulation;
+  height: clamp(200px, 20vw, 260px);
+  width: auto;
+  object-fit: contain;
   user-select: none;
+  pointer-events: none;
 }
 
-.logo:active,
-.logo:hover {
-  filter: none;
-  opacity: 1;
-  transform: translateY(-1px);
+/* індивідуальні підстроювання */
+.epicentr { transform: scale(1.0); }
+.rozetka  { transform: scale(1.05); }
+.spar     { transform: scale(1.05); }
+.ambar    { transform: scale(1.0); }
+
+/* ── Rounded-блоки для прямокутних логотипів ── */
+.rounded {
+  --inset: 10px;             /* внутрішній відступ */
+  border-radius: 500px;       /* 🔥 тепер завжди 25px */
+  overflow: hidden;
+  height: clamp(200px, 20vw, 260px);
+  width: clamp(260px, 28vw, 360px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
 }
 
-/* Дуже маленькі екрани */
-@media (max-width: 380px) {
-  .grid { gap: 12px; }
-  .logo {
-    width: clamp(72px, 32vw, 110px);
-    height: clamp(28px, 9vw, 54px);
-  }
+.roundedImg {
+  width: calc(100% - 2 * var(--inset));
+  height: calc(100% - 2 * var(--inset));
+  object-fit: contain;   /* щоб текст не обрізався */
+  display: block;
 }
 
-/* доступність */
-@media (prefers-reduced-motion: reduce) {
-  .logo { transition: none !important; }
+/* маудоу трохи підсилюємо */
+.maudau { transform: scale(1.06); }
+
+/* велмарт — більше повітря знизу */
+.velmartBox { --inset: 14px; }
+
+/* ===== адаптив ===== */
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .logo, .rounded { height: clamp(170px, 24vw, 220px); }
+  .rounded { width: clamp(220px, 40vw, 300px); }
+  .epicentr, .rozetka, .spar, .ambar, .maudau { transform: none; }
+}
+
+@media (max-width: 520px) {
+  .grid { grid-template-columns: 1fr; }
+  .logo, .rounded { height: clamp(140px, 32vw, 200px); }
+  .rounded { width: clamp(200px, 70vw, 260px); }
 }

@@ -1,53 +1,50 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import styles from './Partners.module.scss';
+import s from './Partners.module.scss';
 
 import Epicentrk from '../../assets/partners/Epicentrk.svg';
-import Rozetka from '../../assets/partners/logorozetka.svg';
-import Spar from '../../assets/partners/spar-1.svg';
-import Ambar from '../../assets/partners/Ambar.svg';
-import Velmart from '../../assets/partners/Velmart.svg';
-import Divochin from '../../assets/partners/divochin.svg';
-import Kasta from '../../assets/partners/kasta.svg';
-import Maudau from '../../assets/partners/Maudau.svg';
-
-const partners = [
-    { id: 1, name: 'Епіцентр', logo: Epicentrk },
-    { id: 2, name: 'Rozetka', logo: Rozetka },
-    { id: 3, name: 'SPAR', logo: Spar },
-    { id: 4, name: 'Амбар', logo: Ambar },
-    { id: 5, name: 'Velmart', logo: Velmart },
-    { id: 6, name: 'Дивоцін', logo: Divochin },
-    { id: 7, name: 'Kasta', logo: Kasta },
-    { id: 8, name: 'Maudau', logo: Maudau },
-];
+import Rozetka   from '../../assets/partners/logorozetka.svg';
+import Spar      from '../../assets/partners/spar-1.svg';
+import Ambar     from '../../assets/partners/Ambar.svg';
+import Velmart   from '../../assets/partners/Velmart.svg';
+import Divochin  from '../../assets/partners/divochin.svg';
+import Kasta     from '../../assets/partners/kasta.svg';
+import Maudau    from '../../assets/partners/Maudau.svg';
 
 export default function PartnersPage() {
     const { t } = useTranslation();
 
     return (
-        <div className={styles.container}>
-            <h1 className={styles.title}>
-                {t('partners.title', 'Наші партнери')}
-            </h1>
-            <p className={styles.subtitle}>
-                {t('partners.subtitle', 'Ми пишаємося співпрацею з провідними компаніями світу')}
-            </p>
+        <section className={s.section}>
+            <div className={s.container}>
+                <header className={s.heading}>
+                    <h1 className={s.title}>{t('partners.title', 'Наші партнери')}</h1>
+                    <p className={s.subtitle}>
+                        {t('partners.subtitle', 'Ми пишаємося співпрацею з провідними компаніями світу')}
+                    </p>
+                </header>
 
-            <div className={styles.grid}>
-                {partners.map((p) => (
-                    <img
-                        key={p.id}
-                        src={p.logo}
-                        alt={p.name}
-                        className={styles.logo}
-                        loading="lazy"
-                        decoding="async"
-                        sizes="(max-width: 480px) 33vw, (max-width: 768px) 25vw, 140px"
-                        draggable={false}
-                    />
-                ))}
+                <div className={s.grid}>
+                    <img src={Epicentrk} alt="Епіцентр" className={`${s.logo} ${s.epicentr}`} />
+                    <img src={Rozetka}   alt="Rozetka"  className={`${s.logo} ${s.rozetka}`} />
+                    <img src={Spar}      alt="SPAR"     className={`${s.logo} ${s.spar}`} />
+                    <img src={Ambar}     alt="Амбар"    className={`${s.logo} ${s.ambar}`} />
+
+                    {/* прямокутні лого з округленням */}
+                    <div className={`${s.rounded} ${s.velmartBox}`}>
+                        <img src={Velmart}  alt="Velmart"  className={s.roundedImg} />
+                    </div>
+                    <div className={s.rounded}>
+                        <img src={Divochin} alt="Дивоцін"  className={s.roundedImg} />
+                    </div>
+                    <div className={s.rounded}>
+                        <img src={Kasta}    alt="Kasta"    className={s.roundedImg} />
+                    </div>
+                    <div className={s.rounded}>
+                        <img src={Maudau}   alt="Maudau"   className={`${s.roundedImg} ${s.maudau}`} />
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
     );
 }
