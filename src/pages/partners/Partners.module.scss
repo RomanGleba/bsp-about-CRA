@@ -35,7 +35,7 @@
   display: block;
   width: clamp(220px, 24vw, 260px);
   height: clamp(160px, 18vw, 200px);
-  object-fit: contain;    /* ✅ НЕ обрізає */
+  object-fit: contain;
   user-select: none;
   pointer-events: none;
 }

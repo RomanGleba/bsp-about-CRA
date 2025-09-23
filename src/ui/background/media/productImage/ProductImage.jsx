@@ -1,27 +1,27 @@
 import React from 'react';
 
-
 export default function ProductImage({
                                          imageKey,
                                          alt = 'Фото товару',
                                          className = '',
-                                         basePath = '/images/products',     // public/images/products
+                                         basePath = '/images/products',
                                          width,
                                          height,
-                                         sizes = "100vw",
+                                         sizes = '100vw',
                                          style,
                                          loading = 'lazy',
                                          decoding = 'async',
                                          fetchPriority = 'auto',
-                                         placeholder = `${basePath}/placeholder.webp`,
+                                         placeholder,
                                      }) {
     if (!imageKey) return null;
 
     const hasExt = /\.[a-z0-9]+$/i.test(imageKey);
     const isAbs = imageKey.startsWith('/') || imageKey.startsWith('http');
-    const src = isAbs
-        ? imageKey
-        : `${basePath}/${imageKey}${hasExt ? '' : '.webp'}`;  // завжди 1 файл: .webp
+    const src = isAbs ? imageKey : `${basePath}/${imageKey}${hasExt ? '' : '.webp'}`;
+    const fallback = placeholder || `${basePath}/placeholder.webp`;
+    const normalizedFetchPriority =
+        fetchPriority === 'high' || fetchPriority === 'low' ? fetchPriority : 'auto';
 
     return (
         <img
@@ -33,12 +33,18 @@ export default function ProductImage({
             sizes={sizes}
             loading={loading}
             decoding={decoding}
-            fetchPriority={fetchPriority}
+            {...{ fetchpriority: normalizedFetchPriority }}
             referrerPolicy="no-referrer"
             draggable={false}
-            style={{ maxWidth:"100%", height:"auto", objectFit:"contain", ...style }}
-            onError={(e)=>{ if (e.currentTarget.src !== placeholder) e.currentTarget.src = placeholder; }}
+            style={{
+                maxWidth: '100%',
+                height: 'auto',
+                objectFit: 'contain',
+                ...style,
+            }}
+            onError={(e) => {
+                if (e.currentTarget.src !== fallback) e.currentTarget.src = fallback;
+            }}
         />
-
     );
 }

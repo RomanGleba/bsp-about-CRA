@@ -1,146 +1,62 @@
 {
   "Dasty": {
     "products": [
-      {
-        "id": "p1",
-        "name": "Dasty сухий корм для котів м'ясне асорті 10кг",
-        "image": "dasty/dasty-beef"
-      },
-      {
-        "id": "p2",
-        "name": "Dasty Chicken 400g",
-        "image": "dasty/dasty-banka"
-      },
-      {
-        "id": "p3",
-        "name": "Dasty сухий корм для котів м'ясне асорті 10кг",
-        "image": "dasty/dasty-cat"
-      },
-      {
-        "id": "p4",
-        "name": "Dasty",
-        "image": "dasty/dasty-cat-banka"
-      }
+      { "id": "p1", "name": "Dasty вологий корм для дорослих собак зі смаком курки 1240г", "image": "dasty/dasty-banka" },
+      { "id": "p2", "name": "Dasty сухий корм для собак зі смаком яловичини 10кг", "image": "dasty/dasty-beef" },
+      { "id": "p3", "name": "Dasty сухий корм для котів, асорті 10кг", "image": "dasty/dasty-cat" },
+      { "id": "p4", "name": "Dasty вологий корм для дорослих котів зі смаком курки 415г", "image": "dasty/dasty-cat-bank-orange" },
+      { "id": "p5", "name": "Dasty вологий корм для дорослих котів зі смаком яловичини 415г", "image": "dasty/dasty-cat-banka" },
+      { "id": "p6", "name": "Dasty вологий корм для собак зі смаком яловичини 1240г", "image": "dasty/dasty-dog-bank-violet" }
     ]
   },
 
   "Fincsi": {
     "products": [
-      {
-        "id": "p5",
-        "name": "Fincsi dog 1kg",
-        "image": "fincsi/fincsi-dog-banka"
-      },
-      {
-        "id": "p6",
-        "name": "Fincsi dog 10kg",
-        "image": "fincsi/fincsi-dog-korm"
-      },
-      {
-        "id": "p7",
-        "name": "Fincsi salami 800g",
-        "image": "fincsi/fincsi-dog-salami"
-      }
+      { "id": "p7",  "name": "Fincsi сухий корм для собак зі смаком яловичини 10кг", "image": "fincsi/fincsi-beef-10kg" },
+      { "id": "p8",  "name": "Fincsi вологий корм для собак зі смаком курки 1240г", "image": "fincsi/fincsi-chicken-1240g" },
+      { "id": "p9",  "name": "Fincsi вологий корм для собак зі смаком яловичини 1240г", "image": "fincsi/fincsi-beef-1240g" },
+      { "id": "p10", "name": "Fincsi вологий корм для собак зі смаком дичини 1240г", "image": "fincsi/fincsi-game-1240g" },
+      { "id": "p11", "name": "Fincsi вологий корм для собак зі смаком телятини 1240г", "image": "fincsi/fincsi-veal-1240g" },
+      { "id": "p12", "name": "Fincsi салямі для собак 800г", "image": "fincsi/fincsi-salami-800g" }
     ]
   },
 
   "Spiky": {
     "products": [
-      {
-        "id": "p8",
-        "name": "Spiky курка Корм для собак 10kg",
-        "image": "spiky/spiky-chicken"
-      },
-
-      {
-        "id": "p9",
-        "name": "Spiky курка Корм для собак 10kg",
-        "image": "spiky/spiky-beef"
-      },
-
-      {
-        "id": "p10",
-        "name": "Spiky курка Корм для собак 10kg",
-        "image": "spiky/spiky-maxi-beef"
-      }
+      { "id": "p13", "name": "Spiky сухий корм для собак зі смаком курки 10кг", "image": "spiky/spiky-chicken" },
+      { "id": "p14", "name": "Spiky сухий корм для собак зі смаком яловичини 10кг", "image": "spiky/spiky-beef" },
+      { "id": "p15", "name": "Spiky Maxi сухий корм для собак зі смаком яловичини 10кг", "image": "spiky/spiky-maxi-beef" },
+      { "id": "p16", "name": "Spiky сухий корм для дорослих котів м’ясний мікс 10кг", "image": "spiky/spiky-cat-meat-mix" }
     ]
   },
+
   "Cattos": {
     "products": [
-      {
-        "id": "p11",
-        "name": "Cattos Яловичина Вологий Корм для котів  415g",
-        "image": "cattos/cattos-beef-banka"
-
-      },
-      {
-        "id": "p12",
-        "name": "Cattos Вологий корм для котів 415g",
-        "image": "cattos/cattos-chicken-banka"
-      },
-      {
-        "id": "p13",
-        "name": "Cattos Вологий корм для котів 415g",
-        "image": "cattos/cattos-fish-banka"
-      },
-      {
-        "id": "p14",
-        "name": "Cattos Вологий корм для котів 415g",
-        "image": "cattos/cattos-meat-banka"
-      }
-
+      { "id": "p17", "name": "Cattos вологий корм для котів зі смаком яловичини 415г", "image": "cattos/cattos-beef-banka" },
+      { "id": "p18", "name": "Cattos вологий корм для котів зі смаком курки 415г", "image": "cattos/cattos-chicken-banka" },
+      { "id": "p19", "name": "Cattos вологий корм для котів зі смаком риби 415г", "image": "cattos/cattos-fish-banka" },
+      { "id": "p20", "name": "Cattos вологий корм для котів зі смаком печінки 415г", "image": "cattos/cattos-meat-banka" }
     ]
   },
-"ThankQ": {
-  "products": [
-    {
-      "id": "p15",
-      "name": "Cattos Яловичина Вологий Корм для котів  415g",
-      "image": "thankQ/thankq-green"
 
-    },
-    {
-      "id": "p16",
-      "name": "Cattos Вологий корм для котів 415g",
-      "image": "thankQ/thankq-yellow"
-    }
+  "ThankQ": {
+    "products": [
+      { "id": "p21", "name": "ThankQ сухий корм для собак зі смаком яловичини 20кг", "image": "thankq/thankq-green" },
+      { "id": "p22", "name": "ThankQ сухий корм для собак зі смаком курки 10кг", "image": "thankq/thankq-yellow" },
+      { "id": "p23", "name": "ThankQ Advenced сухий корм для собак 10кг", "image": "thankq/thankq-advenced" },
+      { "id": "p24", "name": "ThankQ Standard сухий корм для котів зі смаком курки 10кг", "image": "thankq/thankq-standard" },
+      { "id": "p25", "name": "ThankQ сухий корм для собак зі смаком шинки 20кг", "image": "thankq/thankq-red" },
+      { "id": "p26", "name": "ThankQ сухий корм для собак зі смаком ягняти 10кг", "image": "thankq/thankq-pink" }
+    ]
+  },
 
-
-
-  ]
-
-
-},
-"Miss kiss":{
-  "products": [
-    {
-      "id": "p17",
-      "name": "Cattos Яловичина Вологий Корм для котів  415g",
-      "image": "miskis/miskis-turkey-pouch"
-
-    },
-    {
-      "id": "p18",
-      "name": "Cattos Вологий корм для котів 415g",
-      "image": "miskis/pouch-beef"
-    },
-    {
-      "id": "p19",
-      "name": "Cattos Яловичина Вологий Корм для котів  415g",
-      "image": "miskis/pouch-chicken"
-
-    },
-    {
-      "id": "p20",
-      "name": "Cattos Вологий корм для котів 415g",
-      "image": "miskis/pouch-duck"
-    },
-    {
-      "id": "p21",
-      "name": "Cattos Вологий корм для котів 415g",
-      "image": "miskis/pouch-rabbit"
-    }
-  ]
-
-}
+  "Miss kiss": {
+    "products": [
+      { "id": "p27", "name": "Miss Kiss вологий корм для котів зі смаком індички у соусі 100г", "image": "miskis/miskis-turkey-pouch" },
+      { "id": "p28", "name": "Miss Kiss вологий корм для котів зі смаком телятини у соусі 100г", "image": "miskis/pouch-beef" },
+      { "id": "p29", "name": "Miss Kiss вологий корм для котів зі смаком курки у соусі 100г", "image": "miskis/pouch-chicken" },
+      { "id": "p30", "name": "Miss Kiss вологий корм для котів зі смаком качки у соусі 100г", "image": "miskis/pouch-duck" },
+      { "id": "p31", "name": "Miss Kiss вологий корм для котів зі смаком кролика у соусі 100г", "image": "miskis/pouch-rabbit" }
+    ]
+  }
 }
