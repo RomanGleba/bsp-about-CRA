@@ -12,4 +12,6 @@
   height: 100%;
   object-fit: var(--fit, cover);
   object-position: var(--pos, 50% 50%);
+  opacity: 1;                 /* без приглушення */
+  filter: none;               /* без «вибілювання» */
 }

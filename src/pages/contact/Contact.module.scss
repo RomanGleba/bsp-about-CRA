@@ -2,53 +2,89 @@
 $sm: 576px;
 
 /* ===== THEME ===== */
-$green: #16a34a;
-$green-600: #15803d;
 $ink: #0f172a;
+$slate-900: #0f172a;
+$slate-800: #1f2937;
+$slate-700: #334155;
+$slate-600: #475569;
+$slate-500: #64748b;
+
+$border: rgba(15,23,42,.12);
+$muted: rgba(15,23,42,.08);
+
+$radius-lg: 16px;
+$radius-md: 12px;
+
+$shadow: 0 10px 30px rgba(2,6,23,.08);
 
 /* ===== LAYOUT ===== */
 .section {
+  position: relative;
+  /* фон — на ВЕСЬ екран навіть на мобілках */
+  min-height: 100vh;
+  min-height: 100dvh; /* сучасні браузери (включно з iOS 16+) */
   padding: 48px 0 64px;
-  background: #fff;
+  background: transparent; /* фон малює .bg */
+  isolation: isolate;
+}
+/* якщо підтримується svh (враховує смуги браузера на мобілках), використовуємо його */
+@supports (height: 100svh) {
+  .section { min-height: 100svh; }
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* під контентом */
+  pointer-events: none; /* щоб фон не перехоплював кліки */
+}
+/* гарантуємо повне покриття картинкою */
+.bg :where(picture, img) {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: 50% 40% !important; /* за потреби підкрутіть фокус */
 }
 
 .container {
-  max-width: 900px;
+  position: relative;
+  z-index: 1;  /* поверх фону */
+  max-width: 980px;
   margin: 0 auto;
   padding: 0 16px;
+  /* якщо контенту мало — візуально центріємо */
+  display: grid;
+  align-items: start;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 22px;
+/* офіційна біла картка */
+.card {
+  background: #fff;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow;
+  padding: clamp(20px, 2.8vw, 32px);
 }
 
+/* ===== HEADER ===== */
+.header { text-align: center; margin-bottom: 18px; }
 .h1 {
   margin: 0 0 6px;
   font-weight: 900;
-  color: $ink;
+  color: $slate-900;
   font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+  letter-spacing: .01em;
 }
+.lead { margin: 0 auto; max-width: 60ch; color: $slate-600; font-size: 1.05rem; }
 
-.lead {
-  margin: 0 auto;
-  color: #475569;
-  max-width: 60ch;
-  font-size: 1.05rem;
-}
-
-/* ===== FLAT LIST ===== */
-.list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0;
-}
+/* ===== LIST ===== */
+.list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 0; }
 
 .item {
   display: grid;
-  grid-template-columns: 44px 1fr;
+  grid-template-columns: 40px 1fr;
   gap: 12px;
   align-items: start;
   padding: 14px 0;
@@ -57,113 +93,49 @@ $ink: #0f172a;
   &::after {
     content: '';
     position: absolute;
-    left: 44px;
-    right: 0;
-    bottom: 0;
-    height: 1px;
-    background: rgba(15, 23, 42, 0.08);
+    left: 40px; right: 0; bottom: 0; height: 1px;
+    background: $muted;
   }
-
-  &:last-child::after {
-    display: none;
-  }
+  &:last-child::after { display: none; }
 }
+.itemInline { align-items: center; }
 
-.itemInline {
-  align-items: center;
-}
-
-/* icons */
+/* ===== ICONS (нейтральні) ===== */
 .icon,
 .iconGhost {
-  width: 36px;
-  height: 36px;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 10px;
-  font-size: 18px;
+  width: 36px; height: 36px;
+  display: inline-grid; place-items: center;
+  border-radius: 10px; font-size: 18px;
 }
+.icon { background: rgba(15,23,42,.06); color: $slate-800; }
+.iconGhost { border: 1px solid $border; background: rgba(255,255,255,.7); color: $slate-700; }
+.ig { color: inherit; }
 
-.icon {
-  background: $green;
-  color: #fff;
-}
-
-.iconGhost {
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  background: transparent;
-  color: $green;
-}
-
-/* text */
-.body {
-  display: grid;
-  gap: 2px;
-}
-
+/* ===== TEXT ===== */
+.body { display: grid; gap: 2px; }
 .label {
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #64748b;
-  font-weight: 700;
+  font-size: 12px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: $slate-500;
 }
-
 .link {
-  display: inline-block;
-  color: $ink;
-  font-weight: 700;
-  text-decoration: none;
-  transition: color 0.15s ease, text-decoration-color 0.15s ease;
-
+  display: inline-block; color: $ink; font-weight: 700; text-decoration: none;
+  transition: color .15s ease, text-decoration-color .15s ease;
   &:hover {
-    color: $green-600;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 2px;
+    color: $slate-800;
+    text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px;
   }
 }
+.addr { font-style: normal; }
+.text { color: #111827; font-weight: 600; }
 
-.text {
-  color: #111827;
-  font-weight: 600;
-}
-
-.ig {
-  color: $green;
-}
-
-.note {
-  margin-top: 18px;
-  color: #64748b;
-  text-align: center;
-  font-size: 0.95rem;
-}
+.note { margin-top: 16px; color: $slate-500; text-align: center; font-size: .95rem; }
 
 /* ===== MOBILE ===== */
 @media (max-width: $sm) {
-  .section {
-    padding: 32px 0 44px;
-  }
+  .section { padding: 32px 0 44px; }
+  .container { padding: 0 12px; }
+  .card { border-radius: $radius-md; padding: 18px; }
 
-  .container {
-    padding: 0 12px;
-  }
-
-  .item {
-    grid-template-columns: 40px 1fr;
-    padding: 12px 0;
-
-    &::after {
-      left: 40px;
-    }
-  }
-
-  .icon,
-  .iconGhost {
-    width: 32px;
-    height: 32px;
-    font-size: 16px;
-    border-radius: 8px;
-  }
+  .item { grid-template-columns: 36px 1fr; padding: 12px 0; &::after { left: 36px; } }
+  .icon, .iconGhost { width: 32px; height: 32px; font-size: 16px; border-radius: 8px; }
 }

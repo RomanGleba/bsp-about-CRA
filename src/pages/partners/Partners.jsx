@@ -1,4 +1,3 @@
-// PartnersPage.jsx
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import s from './Partners.module.scss';
@@ -11,6 +10,9 @@ import Velmart   from '../../assets/partners/Velmart.svg';
 import Divochin  from '../../assets/partners/divochin.svg';
 import Kasta     from '../../assets/partners/kasta.svg';
 import Maudau    from '../../assets/partners/Maudau.svg';
+
+import BackgroundImage from '../../ui/background/BackgroundImage';
+import { backgrounds } from '../../data/backgrounds';
 
 const partners = [
     { id: 1, name: 'Епіцентр', logo: Epicentrk },
@@ -28,9 +30,13 @@ export default function PartnersPage() {
 
     return (
         <section className={s.section}>
+            <BackgroundImage {...backgrounds.partners} className={s.bgImage} />
+
             <div className={s.container}>
                 <header className={s.heading}>
-                    <h1 className={s.title}>{t('partners.title', 'Наші партнери')}</h1>
+                    <h1 className={s.title}>
+                        {t('partners.title', 'Наші партнери')}
+                    </h1>
                     <p className={s.subtitle}>
                         {t('partners.subtitle', 'Ми пишаємося співпрацею з провідними компаніями світу')}
                     </p>

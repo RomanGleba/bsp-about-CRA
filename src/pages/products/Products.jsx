@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import ProductCard from '../../components/productCard/ProductCard';
 import ResponsiveBanner from '../../ui/background/ResponsiveBanner';
+import BackgroundImageOne from '../../ui/background/BackgroundImage';
 
 import DividerBar from './ui/DividerBar';
 import BackButton from './ui/BackButton';
@@ -13,23 +14,21 @@ import { toKebabKey, resolveBrandLogoSrc } from './utils/brandUtils';
 import { useProducts } from './hooks/useProducts';
 import { useProductCountByBrand } from './hooks/useProductCountByBrand';
 import { useBrands } from './hooks/useBrands';
+import { backgrounds } from '../../data/backgrounds';
 
 import s from './Products.module.scss';
 
-/* ===== Constants ===== */
 const PAGE_SIZE = 8;
 
 export default function Products() {
     const { t } = useTranslation();
 
-    // дані через хуки
     const products = useProducts();
     const productCountByBrand = useProductCountByBrand(products);
     const brands = useBrands();
 
-    // стан UI
     const [activeBrandKey, setActiveBrandKey] = useState(null);
-    const [visibleCountByBrand, setVisibleCountByBrand] = useState({}); // { [brandKey]: number }
+    const [visibleCountByBrand, setVisibleCountByBrand] = useState({});
 
     const handleToggleBrand = useCallback(
         (brandKey) => {
@@ -51,7 +50,6 @@ export default function Products() {
 
     const handleResetToAllBrands = () => setActiveBrandKey(null);
 
-    // продукти активного бренду
     const productsByActiveBrand = useMemo(() => {
         if (!activeBrandKey) return [];
         return products.filter((p) => toKebabKey(p.brand) === activeBrandKey);
@@ -62,7 +60,6 @@ export default function Products() {
         ? productsByActiveBrand.slice(0, visibleCount || PAGE_SIZE)
         : [];
 
-    // кнопки управління
     const handleShowMore = () =>
         setVisibleCountByBrand((m) => ({
             ...m,
@@ -84,11 +81,20 @@ export default function Products() {
             [activeBrandKey]: PAGE_SIZE,
         }));
 
+    const sectionClass = `${s.section} ${activeBrandKey ? s.focusMode : ''}`;
+    const containerClass = `${s.container} ${activeBrandKey ? s.focusContainer : ''}`;
+
     return (
-        <section className={s.section}>
+        <section className={sectionClass}>
+            {/* Фонове зображення лапок */}
+            <BackgroundImageOne {...backgrounds.products} className={s.bgImage} />
+
+            {/* м’який шар */}
+            <div className={s.softOverlay} aria-hidden />
+
             {/* Банер */}
             <ResponsiveBanner
-                webp="/images/backgrounds/more-dogs.webp"
+                webp="/images/backgrounds/dogs-forest.webp"
                 jpg="/images/backgrounds/more-dogs.jpg"
                 alt={t('products.bannerAlt', { defaultValue: 'Корм для улюбленців' })}
                 height="clamp(340px, 56vh, 600px)"
@@ -109,7 +115,7 @@ export default function Products() {
                 </div>
             </ResponsiveBanner>
 
-            <div className={s.container}>
+            <div className={containerClass}>
                 <DividerBar
                     label={
                         activeBrandKey
@@ -118,14 +124,10 @@ export default function Products() {
                     }
                 >
                     {activeBrandKey && (
-                        <BackButton
-                            onClick={handleResetToAllBrands}
-                            label="Повернути всі бренди"
-                        />
+                        <BackButton onClick={handleResetToAllBrands} label="Повернути всі бренди" />
                     )}
                 </DividerBar>
 
-                {/* Сітка брендів */}
                 <BrandGrid
                     brands={brands}
                     activeBrandKey={activeBrandKey}
@@ -134,7 +136,6 @@ export default function Products() {
                     resolveLogoSrc={resolveBrandLogoSrc}
                 />
 
-                {/* Продукти відкритого бренду */}
                 {activeBrandKey && (
                     <BrandProductsSection
                         sectionId={`brand-products-${activeBrandKey}`}

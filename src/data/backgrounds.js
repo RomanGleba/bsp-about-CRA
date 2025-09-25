@@ -10,6 +10,15 @@ export const backgrounds = {
         jpg:  "/images/backgrounds/fura.jpg",
         alt:  "Собака на природі — BSP Group",
     },
-
+    // ✅ новий фон для сторінки продукції
+    products: {
+        webp: "/images/backgrounds/paws5.webp",
+        jpg:  "/images/backgrounds/",
+        alt:  "Фон із лапками — BSP Group",
+    },
+    partners: {
+        webp: "/images/backgrounds/paws5.webp",
+        jpg:  "/images/backgrounds/partner.jpg",
+        alt: "фон щі лапами - BSP Group"
+    }
 };
-

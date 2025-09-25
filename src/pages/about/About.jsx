@@ -17,29 +17,23 @@ import s from './About.module.scss';
 const { Title, Paragraph, Text } = Typography;
 
 /* ========== helpers for brand logos ========== */
-/** Нормалізуємо рядок в ключ: латиниця, цифри; прибираємо діакритику/знаки. */
 const normBrandKey = (v = '') =>
     String(v)
-        .normalize('NFKD')                         // знімаємо діакритику
-        .replace(/[\u0300-\u036f]/g, '')           // комбінуючі знаки
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
-        .replace(/[\u2019\u2018\u201A\uFF07']/g, '') // різні апострофи
-        .replace(/[^a-z0-9]+/g, '-')               // все не a-z0-9 -> дефіс
-        .replace(/^-+|-+$/g, '')                   // обрізаємо краї
-        .replace(/-+/g, '-');                      // стискаємо дефіси
+        .replace(/[\u2019\u2018\u201A\uFF07']/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .replace(/-+/g, '-');
 
-/* ===== Підтягуємо всі лого з src/assets/brands/* (Vite/Webpack) ===== */
 const brandAssetsMap = (() => {
     const map = {};
-
-    // Vite / modern
     try {
-        // eslint-disable-next-line no-undef
         if (typeof import.meta !== 'undefined' && import.meta.glob) {
             // @ts-ignore
             const mods = import.meta.glob('../../assets/brands/*.{png,jpg,jpeg,webp,svg}', {
-                eager: true,
-                as: 'url',
+                eager: true, as: 'url',
             });
             for (const p in mods) {
                 const file = p.split('/').pop() || '';
@@ -54,8 +48,6 @@ const brandAssetsMap = (() => {
             return map;
         }
     } catch {}
-
-    // Webpack (CRA)
     try {
         // eslint-disable-next-line global-require
         const ctx = require.context('../../assets/brands', false, /\.(png|jpe?g|webp|svg)$/);
@@ -69,25 +61,18 @@ const brandAssetsMap = (() => {
             map[tight] = url;
         });
     } catch {}
-
     return map;
 })();
 
-/** src для логотипа за назвою бренду */
 const resolveBrandLogo = (name = '') => {
     const dash = normBrandKey(name);
     const tight = dash.replace(/-/g, '');
     return (
         brandAssetsMap[dash] ||
         brandAssetsMap[tight] ||
-        `${process.env.PUBLIC_URL || ''}/images/brands/${dash}.webp` // fallback у public
+        `${process.env.PUBLIC_URL || ''}/images/brands/${dash}.webp`
     );
 };
-
-const Para = React.memo(({ children, className }) =>
-    children ? <Paragraph className={className || s.text}>{children}</Paragraph> : null
-);
-
 
 const StatStrip = React.memo(({ stats = [] }) => {
     if (!stats?.length) return null;
@@ -103,13 +88,11 @@ const StatStrip = React.memo(({ stats = [] }) => {
     );
 });
 
-/* ====== БРЕНДИ: чиста сітка логотипів ====== */
 const BrandGrid = React.memo(({ title, names = [] }) => {
     if (!names?.length) return null;
     return (
         <div className={s.brandBlock}>
             <Title level={4} className={s.h4}>{title}</Title>
-
             <ul className={s.brandGrid}>
                 {names.map((name) => (
                     <li
@@ -123,9 +106,9 @@ const BrandGrid = React.memo(({ title, names = [] }) => {
                             alt={name}
                             loading="lazy"
                             decoding="async"
+                            sizes="(max-width: 600px) 40vw, (max-width: 1200px) 22vw, 180px"
                             onError={(e) => {
                                 const img = e.currentTarget; img.onerror = null;
-                                // розумні підстановки: webp -> png -> jpg -> placeholder
                                 if (/\.webp($|\?)/i.test(img.src)) { img.src = img.src.replace(/\.webp/i, '.png'); return; }
                                 if (/\.png($|\?)/i.test(img.src))  { img.src = img.src.replace(/\.png/i,  '.jpg'); return; }
                                 img.src = `${process.env.PUBLIC_URL || ''}/images/brands/placeholder.webp`;
@@ -186,10 +169,12 @@ export default function About() {
 
     return (
         <main className={s.page} style={{ '--hero-shift': '200px', '--content-shift': '200px' }}>
-            {/* HERO з фоном */}
+            {/* HERO з фоном і «скляним» блоком */}
             <section className={s.hero} aria-labelledby="about-title">
-                <BackgroundImage {...backgrounds.about} />
+                <BackgroundImage {...backgrounds.about} className={s.heroMedia} />
                 <div className={s.heroBg} aria-hidden />
+
+                {/* Скляний, ненав’язливий контейнер */}
                 <div className={s.heroGlass}>
                     <div className={s.heroInner}>
                         {slogan && <Text className={s.kicker}>{slogan}</Text>}
@@ -202,11 +187,21 @@ export default function About() {
                 </div>
             </section>
 
-            {/* CONTENT */}
+            {/* CONTENT — фон секції окремо, картки поверх */}
             <section className={s.section}>
+                <BackgroundImage
+                    {...backgrounds.partners}
+                    className={s.contentBg}
+                    overlay="linear-gradient(180deg, rgba(248,251,255,.96), rgba(255,255,255,.98))"
+                    loading="lazy"
+                    fetchPriority="low"
+                />
+
                 <div className={s.container}>
-                    {/* ВЕЛИКИЙ CARD-БЛОК ІЗ УСІМА БРЕНДАМИ */}
-                    <section className={`${s.brandsSummary} ${s.brandsSummaryCard}`} aria-labelledby="brands-summary-title">
+                    <section
+                        className={`${s.brandsSummary} ${s.brandsSummaryCard}`}
+                        aria-labelledby="brands-summary-title"
+                    >
                         <Title level={2} id="brands-summary-title" className={s.h2}>
                             {labels?.brands_summary_title || 'Бренди та партнерства'}
                         </Title>

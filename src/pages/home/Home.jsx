@@ -34,7 +34,6 @@ export default function Home() {
 
             {/* затемнення для контрасту */}
             <div className={s.overlay} aria-hidden="true" />
-
             <div className={s.inner}>
                 <div className={s.copy}>
                     <Space direction="vertical" size={10} className={s.kickerWrap}>
