@@ -14,7 +14,7 @@ import { backgrounds } from '../../data/backgrounds';
 const CONTACTS = {
     phone: '+380979445353',
     email: 'info@bsp-group.ua',
-    address: 'Україна, Закарпатська обл., м. Ужгород, вул. Проектна, 1',
+    address: 'Україна, Закарпатська обл. м. Ужгород, вул. Проектна, 1',
     instagramLabel: 'Instagram',
 };
 

@@ -169,12 +169,10 @@ export default function About() {
 
     return (
         <main className={s.page} style={{ '--hero-shift': '200px', '--content-shift': '200px' }}>
-            {/* HERO з фоном і «скляним» блоком */}
             <section className={s.hero} aria-labelledby="about-title">
                 <BackgroundImage {...backgrounds.about} className={s.heroMedia} />
                 <div className={s.heroBg} aria-hidden />
 
-                {/* Скляний, ненав’язливий контейнер */}
                 <div className={s.heroGlass}>
                     <div className={s.heroInner}>
                         {slogan && <Text className={s.kicker}>{slogan}</Text>}
@@ -187,7 +185,6 @@ export default function About() {
                 </div>
             </section>
 
-            {/* CONTENT — фон секції окремо, картки поверх */}
             <section className={s.section}>
                 <BackgroundImage
                     {...backgrounds.partners}

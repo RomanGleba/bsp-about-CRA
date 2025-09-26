@@ -18,8 +18,8 @@ export default function Navbar() {
     const navItems = useMemo(
         () => [
             { key: '/',          label: t('header.home'),     to: '/' },
-            { key: '/products',  label: t('header.products'), to: '/products' },
             { key: '/about',     label: t('header.about'),    to: '/about' },
+            { key: '/products',  label: t('header.products'), to: '/products' },
             { key: '/partners',  label: t('header.partners'), to: '/partners' },
             { key: '/contacts',  label: t('header.contacts'), to: '/contacts' },
             {
