@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import ProductCard from '../../components/productCard/ProductCard';
+import ProductCard from './productCard/ProductCard';
 import ResponsiveBanner from '../../ui/background/ResponsiveBanner';
 import BackgroundImageOne from '../../ui/background/BackgroundImage';
 

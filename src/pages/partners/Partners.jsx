@@ -38,7 +38,7 @@ export default function PartnersPage() {
                         {t('partners.title', 'Наші партнери')}
                     </h1>
                     <p className={s.subtitle}>
-                        {t('partners.subtitle', 'Ми пишаємося співпрацею з провідними компаніями світу')}
+                        {t('partners.subtitle', 'Ми пишаємося співпрацею з провідними компаніями в усій Україні.')}
                     </p>
                 </header>
 

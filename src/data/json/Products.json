@@ -1,18 +1,20 @@
 {
   "Dasty": {
     "products": [
-      { "id": "p1", "name": "Dasty вологий корм для дорослих собак зі смаком курки 1240г", "image": "dasty/dasty-banka" },
+
       { "id": "p2", "name": "Dasty сухий корм для собак зі смаком яловичини 10кг", "image": "dasty/dasty-beef" },
       { "id": "p3", "name": "Dasty сухий корм для котів, асорті 10кг", "image": "dasty/dasty-cat" },
-      { "id": "p4", "name": "Dasty вологий корм для дорослих котів зі смаком курки 415г", "image": "dasty/dasty-cat-bank-orange" },
-      { "id": "p5", "name": "Dasty вологий корм для дорослих котів зі смаком яловичини 415г", "image": "dasty/dasty-cat-banka" },
-      { "id": "p6", "name": "Dasty вологий корм для собак зі смаком яловичини 1240г", "image": "dasty/dasty-dog-bank-violet" }
+      { "id": "p6", "name": "Dasty вологий корм для собак зі смаком яловичини 1240г", "image": "dasty/dasty-dog-bank-violet" },
+      { "id": "p5", "name": "Dasty вологий корм для котів зі смаком яловичини 415г", "image": "dasty/dasty-cat-banka" },
+      { "id": "p1", "name": "Dasty вологий корм для собак зі смаком курки 1240г", "image": "dasty/dasty-banka" },
+      { "id": "p4", "name": "Dasty вологий корм для котів зі смаком курки 415г", "image": "dasty/dasty-cat-bank-orange" }
     ]
   },
 
   "Fincsi": {
     "products": [
       { "id": "p7",  "name": "Fincsi сухий корм для собак зі смаком яловичини 10кг", "image": "fincsi/fincsi-beef-10kg" },
+      { "id": "p37",  "name": "Fincsi сухий корм для собак зі смаком яловичини 3кг", "image": "fincsi/fincsi-beef-3kg" },
       { "id": "p8",  "name": "Fincsi вологий корм для собак зі смаком курки 1240г", "image": "fincsi/fincsi-chicken-1240g" },
       { "id": "p9",  "name": "Fincsi вологий корм для собак зі смаком яловичини 1240г", "image": "fincsi/fincsi-beef-1240g" },
       { "id": "p10", "name": "Fincsi вологий корм для собак зі смаком дичини 1240г", "image": "fincsi/fincsi-game-1240g" },
@@ -24,7 +26,7 @@
   "Spiky": {
     "products": [
       { "id": "p13", "name": "Spiky сухий корм для собак зі смаком курки 10кг", "image": "spiky/spiky-chicken" },
-      { "id": "p14", "name": "Spiky сухий корм для собак зі смаком яловичини 10кг", "image": "spiky/spiky-beef" },
+      { "id": "p14", "name": "Spiky сухий корм для собак зі смаком яловичини 3кг", "image": "spiky/spiky-beef" },
       { "id": "p15", "name": "Spiky Maxi сухий корм для собак зі смаком яловичини 10кг", "image": "spiky/spiky-maxi-beef" },
       { "id": "p16", "name": "Spiky сухий корм для дорослих котів м’ясний мікс 10кг", "image": "spiky/spiky-cat-meat-mix" }
     ]
@@ -41,12 +43,17 @@
 
   "ThankQ": {
     "products": [
-      { "id": "p21", "name": "ThankQ сухий корм для собак зі смаком яловичини 20кг", "image": "thankq/thankq-green" },
-      { "id": "p22", "name": "ThankQ сухий корм для собак зі смаком курки 10кг", "image": "thankq/thankq-yellow" },
-      { "id": "p23", "name": "ThankQ Advenced сухий корм для собак 10кг", "image": "thankq/thankq-advenced" },
-      { "id": "p24", "name": "ThankQ Standard сухий корм для котів зі смаком курки 10кг", "image": "thankq/thankq-standard" },
-      { "id": "p25", "name": "ThankQ сухий корм для собак зі смаком шинки 20кг", "image": "thankq/thankq-red" },
-      { "id": "p26", "name": "ThankQ сухий корм для собак зі смаком ягняти 10кг", "image": "thankq/thankq-pink" }
+      { "id": "p21", "name": "ThankQ сухий корм для собак зі смаком яловичини 20кг", "image": "thankq/thankq-green20" },
+      { "id": "p22", "name": "ThankQ сухий корм для собак зі смаком курки 20кг", "image": "thankq/thankq-yellow20" },
+      { "id": "p23", "name": "ThankQ сухий корм для собак зі смаком ягняти 20кг", "image": "thankq/thankq-pink20" },
+      { "id": "p24", "name": "ThankQ сухий корм для собак зі смаком шинки 20кг", "image": "thankq/thankq-red20" },
+      { "id": "p25", "name": "ThankQ сухий корм для собак зі смаком яловичини 10кг", "image": "thankq/thankq-green10" },
+      { "id": "p26", "name": "ThankQ сухий корм для собак зі смаком курки 10кг", "image": "thankq/thankq-yellow-chicken10-kg-c" },
+      { "id": "p32", "name": "ThankQ сухий корм для собак зі смаком ягняти 10кг", "image": "thankq/thankq-pink10" },
+      { "id": "p33", "name": "ThankQ сухий корм для собак зі смаком шинки 10кг", "image": "thankq/thankq-red10" },
+      { "id": "p34", "name": "ThankQ сухий корм для собак Advanced зі смаком яловичини 10кг", "image": "thankq/thankq-advanced" },
+      { "id": "p35", "name": "ThankQ сухий корм для цуценят зі смаком яловичини 10кг", "image": "thankq/thankq-junior" },
+      { "id": "p36", "name": "ThankQ сухий корм для котів зі смаком курки 10кг", "image": "thankq/thankq-standardcat" }
     ]
   },
 

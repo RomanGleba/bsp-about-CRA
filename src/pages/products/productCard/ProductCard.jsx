@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import ProductImage from '../../ui/background/media/productImage/ProductImage';
+import ProductImage from '../../../ui/background/media/productImage/ProductImage';
 import s from './ProductCard.module.scss';
 
 const DEFAULT_SIZES =
@@ -56,7 +56,7 @@ const FLAVOR_COLOR = [
     { key: /(печін|печен|liver|m[aá]j)/i, label: 'Печінка', color: '#8b5e34' },
     { key: /(шинк|ham|sonka)/i, label: 'Шинка', color: '#ff6b9a' },
     { key: /(ягнят|ягнен|lamb|b[aá]r[aá]ny)/i, label: 'Ягня', color: '#10b981' },
-    { key: /(м[’']?ясн.*м[іi]кс|асорті|mix)/i, label: 'М’ясний мікс', color: '#64748b' },
+    { key: /(м[’']?ясн.*м[іi]кс|асорті|mix)/i, label: 'М’ясний мікс', color: '#d260ee' },
 
 ];
 
