@@ -167,7 +167,7 @@
   padding: clamp(10px, 1.8vw, 16px);
   background: var(--surface) !important;
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+
   box-shadow: var(--shadow);
   text-align: left;
   cursor: pointer;
@@ -187,7 +187,6 @@
 
 .brandMedia {
   background: linear-gradient(180deg,#f9fafb 0%,#f2f4f7 100%) !important;
-  border-radius: var(--radius-md);
   display: grid;
   place-items: center;
   padding: clamp(10px, 2vw, 18px);
@@ -253,7 +252,7 @@
 .productCol .media,
 .productCol .imageWrap {
   aspect-ratio: 3 / 2;
-  border-radius: var(--radius-md);
+
   overflow: hidden;
   background: #f6f8fb;
   display: grid;
@@ -331,3 +330,4 @@
 .backBtn:hover { background: #d1fae5; }
 .backBtn:active { transform: translateY(0); box-shadow: 0 1px 4px rgba(22,163,74,.12); }
 .backBtn:focus-visible { outline: 2px solid #34d399; outline-offset: 3px; }
+

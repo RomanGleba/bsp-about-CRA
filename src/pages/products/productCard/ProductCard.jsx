@@ -46,18 +46,17 @@ function splitTitleAndWeight(name = '') {
 /** Мапа кольорів для смаків */
 const FLAVOR_COLOR = [
     { key: /(ялович|говядин|beef|marha)/i, label: 'Яловичина', color: '#e11d48' },
-    { key: /(курк|куриц|chicken|csirke)/i, label: 'Курка', color: '#f59e0b' },
-    { key: /(індич|индик|turkey|pulyka)/i, label: 'Індичка', color: '#22c55e' },
-    { key: /(качк|утк|duck|kacsa)/i, label: 'Качка', color: '#0ea5e9' },
-    { key: /(лосос|риба|fish|salmon|tuna|hallal)/i, label: 'Риба', color: '#3b82f6' },
-    { key: /(крол|rabbit|ny[uú]l)/i, label: 'Кролик', color: '#a855f7' },
-    { key: /(дичин|game|vad)/i, label: 'Дичина', color: '#16a34a' },
-    { key: /(теля|veal|borj[uú])/i, label: 'Телятина', color: '#ef4444' },
-    { key: /(печін|печен|liver|m[aá]j)/i, label: 'Печінка', color: '#8b5e34' },
-    { key: /(шинк|ham|sonka)/i, label: 'Шинка', color: '#ff6b9a' },
-    { key: /(ягнят|ягнен|lamb|b[aá]r[aá]ny)/i, label: 'Ягня', color: '#10b981' },
+    { key: /(курк|куриц|chicken|csirke)/i, label: 'Курка',      color: '#f59e0b' },
+    { key: /(індич|индик|turkey|pulyka)/i, label: 'Індичка',    color: '#22c55e' },
+    { key: /(качк|утк|duck|kacsa)/i,       label: 'Качка',      color: '#16a34a' },
+    { key: /(лосос|риба|fish|salmon|tuna|hallal)/i, label: 'Риба',   color: '#3b82f6' },
+    { key: /(крол|rabbit|ny[uú]l)/i,       label: 'Кролик',     color: '#a855f7' },
+    { key: /(дичин|game|vad)/i,            label: 'Дичина',     color: '#a3e635' },
+    { key: /(теля|veal|borj[uú])/i,        label: 'Телятина',   color: '#ef4444' },
+    { key: /(печін|печен|liver|m[aá]j)/i,  label: 'Печінка',    color: '#8b5e34' },
+    { key: /(шинк|ham|sonka)/i,            label: 'Шинка',      color: '#ff6b9a' },
+    { key: /(ягнят|ягня|lamb|b[aá]r[aá]ny)/i, label: 'Ягня',    color: '#10b981' },
     { key: /(м[’']?ясн.*м[іi]кс|асорті|mix)/i, label: 'М’ясний мікс', color: '#d260ee' },
-
 ];
 
 /** Пошук смаку */
@@ -93,9 +92,7 @@ function ProductCardBase({
                 s.productCard,
                 interactive ? s.clickable : '',
                 focused ? s.focused : '',
-            ]
-                .filter(Boolean)
-                .join(' ')}
+            ].filter(Boolean).join(' ')}
             role={interactive ? 'button' : 'group'}
             aria-label={p?.name || 'Картка товару'}
             onClick={interactive ? onClick : undefined}
@@ -115,7 +112,9 @@ function ProductCardBase({
             </span>
                     )}
 
-                    <div className={s.mediaInner}>
+                    {/* Контейнер з уніфікованим розміром картинки.
+             За бажання — можна передати p.imgScale для одиничних кейсів */}
+                    <div className={s.mediaInner} style={{ '--img-scale': p?.imgScale ?? 1 }}>
                         <ProductImage
                             imageKey={p.image}
                             alt={p?.name || 'Фото товару'}
@@ -128,7 +127,7 @@ function ProductCardBase({
                         />
                     </div>
 
-                    {/* Вага знизу справа */}
+                    {/* Бейдж ваги знизу справа */}
                     {weight && (
                         <span className={s.weightBadge} aria-hidden="true">
               {weight}

@@ -36,12 +36,8 @@ export default function ProductImage({
             {...{ fetchpriority: normalizedFetchPriority }}
             referrerPolicy="no-referrer"
             draggable={false}
-            style={{
-                maxWidth: '100%',
-                height: 'auto',
-                objectFit: 'contain',
-                ...style,
-            }}
+            /* ВАЖЛИВО: НЕ задаємо тут height:auto/objectFit — хай керує CSS у картці */
+            style={{ display: 'block', maxWidth: '100%', ...style }}
             onError={(e) => {
                 if (e.currentTarget.src !== fallback) e.currentTarget.src = fallback;
             }}

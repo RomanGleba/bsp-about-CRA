@@ -4,28 +4,23 @@
   --card-shadow: 0 10px 30px rgba(0, 0, 0, .08);
   --card-border: 1px solid rgba(15, 23, 42, .08);
 
-  /* Медіаблок */
+  /* Медіаблок (компактний) */
   --media-bg: linear-gradient(180deg, #f9fafb 0%, #f2f4f7 100%);
   --media-radius: 16px;
-  --media-pad: clamp(12px, 2vw, 24px);
-  --media-aspect: 3 / 4.1; /* банки/паучи/мішки */
+  --media-pad: clamp(8px, 1.4vw, 16px);
+  --media-aspect: 2 / 3.2; /* можна 2/3.0 якщо хочеш ще нижче */
 }
 
 /* Картка */
 .productCard {
   width: 100%;
-  height: 100%;
+  height: auto;                           /* картка росте лише там, де треба */
   border-radius: var(--card-radius);
   border: var(--card-border);
   background: #fff;
   box-shadow: var(--card-shadow);
   transition: transform .18s ease, box-shadow .18s ease;
   text-align: left;
-
-  /* трохи запасу по висоті, але без “цеглин” */
-  min-height: clamp(360px, 38vw, 480px);
-
-  /* ресет для варіанту-кнопки */
   padding: 0;
   appearance: none;
   background-clip: padding-box;
@@ -45,16 +40,15 @@
   .clickable:hover { transform: none; box-shadow: var(--card-shadow); }
 }
 
-/* Тіло */
+/* Тіло картки */
 .body {
   display: grid;
-  grid-template-rows: auto auto;
-  row-gap: 14px;
-  height: 100%;
+  grid-template-rows: auto auto;          /* медіа + текст, без фіксованих висот */
+  row-gap: 8px;                           /* підтягнули текст ближче */
   padding: 16px;
 }
 @media (min-width: 576px){ .body { padding: 18px; } }
-@media (min-width: 992px){ .body { padding: 20px; row-gap: 16px; } }
+@media (min-width: 992px){ .body { padding: 20px; row-gap: 10px; } }
 
 /* Медіа контейнер */
 .media {
@@ -80,7 +74,7 @@
 .media :global(img) { max-width: 100%; max-height: 100%; }
 .media :global(img) {
   width: auto;
-  height: auto;
+  height: 100%;                           /* рівномірно заповнює медіаблок */
   object-fit: contain;
   object-position: center;
   user-select: none;
@@ -106,7 +100,7 @@
 .weightBadge {
   position: absolute;
   right: 12px;
-  bottom: 10px; /* опущено трохи нижче, щоб не перекривати товар */
+  bottom: 10px;
   padding: 6px 12px;
   border-radius: 9999px;
   background: #16a34a;
@@ -118,20 +112,17 @@
   white-space: nowrap;
 }
 
-/* Заголовок — 3 рядки */
+/* Заголовок — БЕЗ “...”, повний текст, карточка росте */
 .title {
   margin: 0;
   font-weight: 800;
-  line-height: 1.35;
+  line-height: 1.22;
   font-size: clamp(15px, 0.6vw + 14px, 20px);
   color: #0f172a;
 
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-
-  min-height: calc(1.35em * 3);
+  display: block;                         /* прибрали line-clamp і мінвисоту */
+  overflow: visible;                      /* жодних “...” */
+  white-space: normal;
   word-break: break-word;
   hyphens: auto;
 }
@@ -139,7 +130,5 @@
 /* Акцент при фокусі */
 .focused { box-shadow: 0 16px 44px rgba(0,0,0,.12); }
 .focused .title {
-  -webkit-line-clamp: unset;
-  min-height: auto;
   font-size: clamp(16px, .7vw + 14px, 22px);
 }
