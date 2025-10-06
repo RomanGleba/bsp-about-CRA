@@ -11,12 +11,12 @@ import BrandGrid from './brand/BrandGrid';
 import BrandProductsSection from './brandProducts/BrandProductsSection';
 
 import { toKebabKey, resolveBrandLogoSrc } from './utils/brandUtils';
-import { useProducts } from './hooks/useProducts';
-import { useProductCountByBrand } from './hooks/useProductCountByBrand';
+import { useProducts, useProductCountByBrand } from './hooks/useProducts';
 import { useBrands } from './hooks/useBrands';
 import { backgrounds } from '../../data/backgrounds';
 
 import s from './Products.module.scss';
+
 
 const PAGE_SIZE = 8;
 

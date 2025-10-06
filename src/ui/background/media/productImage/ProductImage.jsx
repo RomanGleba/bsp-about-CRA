@@ -1,5 +1,7 @@
 import React from 'react';
 
+const CDN_BASE = (process.env.REACT_APP_CDN_BASE_URL || '').replace(/\/+$/, '');
+
 export default function ProductImage({
                                          imageKey,
                                          alt = 'Фото товару',
@@ -18,7 +20,18 @@ export default function ProductImage({
 
     const hasExt = /\.[a-z0-9]+$/i.test(imageKey);
     const isAbs = imageKey.startsWith('/') || imageKey.startsWith('http');
-    const src = isAbs ? imageKey : `${basePath}/${imageKey}${hasExt ? '' : '.webp'}`;
+
+    // Якщо передали повний URL — використовуємо його.
+    // Якщо передали key — будуємо URL з CDN_BASE (якщо заданий) або з basePath.
+    let src = '';
+    if (isAbs) {
+        src = imageKey;
+    } else if (CDN_BASE && /^(products|brands)\//i.test(imageKey)) {
+        src = `${CDN_BASE}/${imageKey}`;
+    } else {
+        src = `${basePath}/${imageKey}${hasExt ? '' : '.webp'}`;
+    }
+
     const fallback = placeholder || `${basePath}/placeholder.webp`;
     const normalizedFetchPriority =
         fetchPriority === 'high' || fetchPriority === 'low' ? fetchPriority : 'auto';
@@ -33,10 +46,9 @@ export default function ProductImage({
             sizes={sizes}
             loading={loading}
             decoding={decoding}
-            {...{ fetchpriority: normalizedFetchPriority }}
+            fetchPriority={normalizedFetchPriority}
             referrerPolicy="no-referrer"
             draggable={false}
-            /* ВАЖЛИВО: НЕ задаємо тут height:auto/objectFit — хай керує CSS у картці */
             style={{ display: 'block', maxWidth: '100%', ...style }}
             onError={(e) => {
                 if (e.currentTarget.src !== fallback) e.currentTarget.src = fallback;
