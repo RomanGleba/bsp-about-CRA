@@ -1,43 +1,38 @@
-// utils/brandUtils.js
-
-/** Convert string to kebab-case key */
+// src/pages/products/utils/brandUtils.js
 export const toKebabKey = (v) =>
     (v ?? '').toString().trim().toLowerCase().replace(/\s+/g, '-');
 
-/** Check if filename has extension */
-export const hasExtension = (s = '') => /\.[a-z0-9]+$/i.test(s);
-
-/** Check if path is absolute or full URL */
-export const isAbsolute = (s = '') => /^\/|^https?:\/\//i.test(s);
-
-/** Map of brand logo assets (Webpack require.context for CRA/Vite) */
-export const brandLogoUrlByKey = (() => {
-    const ctx = require.context('../../../assets/brands', false, /\.(png|jpe?g|webp|svg)$/);
-    const map = {};
-    ctx.keys().forEach((k) => {
-        const file = k.replace('./', '');
-        const key = toKebabKey(file.replace(/\.(png|jpe?g|webp|svg)$/i, ''));
-        map[key] = ctx(k);
-    });
-    return map;
-})();
+const CDN = (process.env.REACT_APP_CDN_BASE_URL || '').replace(/\/+$/, '');
+const hasExt = (s = '') => /\.[a-z0-9]+$/i.test(s);
+const isAbs  = (s = '') => /^https?:\/\//i.test(s) || s.startsWith('/');
+const strip  = (s = '') => String(s).replace(/^\/+/, '');
 
 /**
- * Resolve src for brand logo.
- * Priority:
- *  1. If brand.image is absolute or has extension → return as is
- *  2. If brand.image = "acme" (no extension) → look in logo map, else fallback to /public
- *  3. If no image → try by brand.name
+ * Будуємо src для логотипа бренду з урахуванням CDN.
+ * Підтримує варіанти:
+ *  - brand.image = абсолютний URL → повертаємо як є
+ *  - brand.image = "brands/dasty-fon.webp" або "products/..." → CDN + цей шлях
+ *  - brand.image = "dasty-fon" (без розширення/шляху) → CDN + "brands/dasty-fon.webp"
+ *  - brand.image відсутній → CDN + "brands/<brand-name-kebab>.webp"
  */
-export const resolveBrandLogoSrc = (brand) => {
-    const keyFromName = toKebabKey(brand.name);
-    const image = (brand.image || '').trim();
+export const resolveBrandLogoSrc = (brand = {}) => {
+    const nameKey = toKebabKey(brand.name || '');
+    let img = strip(brand.image || '');
 
-    if (image && !isAbsolute(image) && !hasExtension(image)) {
-        const k = toKebabKey(image);
-        return brandLogoUrlByKey[k] || `${process.env.PUBLIC_URL}/images/brands/${k}.webp`;
+    if (isAbs(img)) return img;
+
+    // якщо вказали ключ зі шляхом
+    if (img) {
+        if (/^(brands|products)\//i.test(img)) {
+            const key = hasExt(img) ? img : `${img}.webp`;
+            return CDN ? `${CDN}/${key}` : `/${key}`;
+        }
+        // якщо дали лише ім'я файлу без розширення/шляху
+        const file = hasExt(img) ? img : `${img}.webp`;
+        return CDN ? `${CDN}/brands/${file}` : `/images/brands/${file}`;
     }
-    if (image) return image;
 
-    return brandLogoUrlByKey[keyFromName] || `${process.env.PUBLIC_URL}/images/brands/${keyFromName}.webp`;
+    // дефолт: будуємо по назві бренду
+    const file = `${nameKey}.webp`;
+    return CDN ? `${CDN}/brands/${file}` : `/images/brands/${file}`;
 };

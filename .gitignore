@@ -1,5 +1,4 @@
-# ── Environment variables ─────────────────────────────────────────
-# Ігноруємо всі реальні env-файли…
+# env
 .env
 .env.*.local
 .env.local
@@ -8,6 +7,10 @@
 .env.production.local
 .env.production
 
-# …але тримаємо в репозиторії лише приклади зі змінними
+# keep only templates
 !.env.example
 !.env.production.example
+
+# deps & build
+node_modules/
+build/
