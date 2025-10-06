@@ -13,28 +13,35 @@ export default function ProductImage({
                                          style,
                                          loading = 'lazy',
                                          decoding = 'async',
-                                         fetchPriority = 'auto',
+                                         fetchPriority = 'auto',           // <- залишаємо як prop компонента
                                          placeholder,
                                      }) {
     if (!imageKey) return null;
 
-    const hasExt = /\.[a-z0-9]+$/i.test(imageKey);
-    const isAbs = imageKey.startsWith('/') || imageKey.startsWith('http');
+    const hasExt = /\.[a-z0-9]+$/i.test(imageKey || '');
+    const isUrl  = /^https?:\/\//i.test(imageKey || '');
+    const isRoot = typeof imageKey === 'string' && imageKey.startsWith('/');
+    const keyNoSlash = typeof imageKey === 'string' ? imageKey.replace(/^\/+/, '') : '';
 
-    // Якщо передали повний URL — використовуємо його.
-    // Якщо передали key — будуємо URL з CDN_BASE (якщо заданий) або з basePath.
     let src = '';
-    if (isAbs) {
+    if (isUrl || isRoot) {
         src = imageKey;
-    } else if (CDN_BASE && /^(products|brands)\//i.test(imageKey)) {
-        src = `${CDN_BASE}/${imageKey}`;
+    } else if (CDN_BASE && /^(products|brands)\//i.test(keyNoSlash)) {
+        src = `${CDN_BASE}/${keyNoSlash}`;
     } else {
-        src = `${basePath}/${imageKey}${hasExt ? '' : '.webp'}`;
+        src = `${basePath}/${keyNoSlash}${hasExt ? '' : '.webp'}`;
     }
 
-    const fallback = placeholder || `${basePath}/placeholder.webp`;
+    const fallback =
+        placeholder ||
+        (basePath ? `${basePath}/placeholder.webp` : '/images/products/placeholder.webp');
+
     const normalizedFetchPriority =
         fetchPriority === 'high' || fetchPriority === 'low' ? fetchPriority : 'auto';
+
+    // готуємо атрибут тільки якщо не 'auto', інакше не додаємо нічого
+    const fetchpriorityAttr =
+        normalizedFetchPriority !== 'auto' ? { fetchpriority: normalizedFetchPriority } : {};
 
     return (
         <img
@@ -46,7 +53,7 @@ export default function ProductImage({
             sizes={sizes}
             loading={loading}
             decoding={decoding}
-            fetchPriority={normalizedFetchPriority}
+            {...fetchpriorityAttr}         // <-- ВАЖЛИВО: нижній регістр
             referrerPolicy="no-referrer"
             draggable={false}
             style={{ display: 'block', maxWidth: '100%', ...style }}

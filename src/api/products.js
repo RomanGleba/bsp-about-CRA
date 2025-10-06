@@ -1,72 +1,64 @@
-// src/api/products.js
-const API_BASE = (
-    process.env.REACT_APP_PUBLIC_API_URL ||
-    process.env.REACT_APP_API_URL ||
-    ''
-).replace(/\/+$/, '');
+const API      = (process.env.REACT_APP_API_URL || '').replace(/\/+$/, '');
+const CATALOG  = (process.env.REACT_APP_PRODUCTS_CATALOG || '').trim();
+const BRANDS   = (process.env.REACT_APP_BRANDS_INDEX || '').trim();
 
-async function jsonFetch(path, opts = {}) {
-    if (!API_BASE) {
-        throw new Error('REACT_APP_PUBLIC_API_URL або REACT_APP_API_URL не задано');
-    }
-    const url = `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
-    const res = await fetch(url, {
-        method: opts.method || 'GET',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            ...(opts.headers || {}),
-        },
-        body: opts.body ? JSON.stringify(opts.body) : undefined,
-        mode: 'cors',
-        credentials: 'omit',
-    });
-    if (!res.ok) {
-        const txt = await res.text().catch(() => '');
-        throw new Error(txt || `HTTP ${res.status} ${url}`);
-    }
-    return res.json();
+async function j(url) {
+    const r = await fetch(url, { mode: 'cors' });
+    if (!r.ok) throw new Error(`HTTP ${r.status} ${url}`);
+    return r.json();
 }
-
-function normImage(x) {
-    if (!x) return null;
-    const url = x.url || x.src || '';
-    if (!url) return null;
-    return {
-        id: x.id || x.key || url,
-        key: x.key || x.id || null,
-        url,
-    };
-}
-
-function normProduct(p) {
-    return {
-        id: String(p?.id ?? ''),
-        title: String(p?.title ?? '').trim(),
-        description: p?.description ?? '',
-        brand: String(p?.brand ?? '').trim(),
-        // сайт може юзати priceCents; якщо бек не дає — лишаємо undefined
-        priceCents: typeof p?.priceCents === 'number' ? p.priceCents : undefined,
-        // якщо у вас вага — теж прокинемо, фронт може ігнорити
-        weightGrams: typeof p?.weightGrams === 'number' ? p.weightGrams : undefined,
-        images: Array.isArray(p?.images) ? p.images.map(normImage).filter(Boolean) : [],
-    };
-}
-
-function normBrand(b) {
-    return {
-        id: b?.id ?? null,
-        name: String(b?.name ?? '').trim(),
-        image: b?.image || null,
-    };
-}
+const hasExt   = (s='') => /\.[a-z0-9]+$/i.test(s);
+const strip    = (s='') => String(s).replace(/^\/+/, '');
 
 export async function fetchProducts() {
-    const data = await jsonFetch('/products');
-    return Array.isArray(data) ? data.map(normProduct) : [];
+    // 1) спробувати API якщо є
+    try {
+        if (API) {
+            const arr = await j(`${API}/products`);
+            if (Array.isArray(arr) && arr.length) return arr;
+        }
+    } catch {}
+
+    // 2) fallback – твій S3/CF JSON (об'єкт { Brand: {products:[...]}, ... })
+    if (!CATALOG) return [];
+    const raw = await j(CATALOG);
+
+    if (Array.isArray(raw)) return raw; // на випадок якщо колись стане масивом
+
+    const out = [];
+    for (const [brand, group] of Object.entries(raw || {})) {
+        (group?.products || []).forEach(p => {
+            const img = strip(p.image || '');                 // "dasty/dasty-banka"
+            const key = hasExt(img) ? img : `${img}.webp`;    // "dasty/dasty-banka.webp"
+            out.push({
+                id: p.id,
+                brand,
+                name: p.name,
+                images: [{ key: `products/${key}` }],           // <= те, що чекає ProductCard/ProductImage
+            });
+        });
+    }
+    return out;
 }
 
 export async function fetchBrands() {
-    const data = await jsonFetch('/brands');
-    return Array.isArray(data) ? data.map(normBrand) : [];
+    try {
+        if (API) {
+            const arr = await j(`${API}/brands`);
+            if (Array.isArray(arr) && arr.length) return arr;
+        }
+    } catch {}
+
+    if (!BRANDS) return [];
+    const raw = await j(BRANDS);
+    const arr =
+        Array.isArray(raw?.brands) ? raw.brands :
+            Array.isArray(raw?.brends) ? raw.brends :
+                Array.isArray(raw) ? raw : [];
+
+    return arr.map(b => ({
+        id: b.id ?? null,
+        name: String(b.name || '').trim(),
+        image: b.image ?? null,
+    }));
 }

@@ -11,12 +11,11 @@ import BrandGrid from './brand/BrandGrid';
 import BrandProductsSection from './brandProducts/BrandProductsSection';
 
 import { toKebabKey, resolveBrandLogoSrc } from './utils/brandUtils';
-import { useProducts, useProductCountByBrand } from './hooks/useProducts';
-import { useBrands } from './hooks/useBrands';
+import { useProducts } from './hooks/useProducts';
+import { useProductCountByBrand } from './hooks/useProductCountByBrand';
 import { backgrounds } from '../../data/backgrounds';
-
+import { useBrands } from './hooks/useBrands';
 import s from './Products.module.scss';
-
 
 const PAGE_SIZE = 8;
 
@@ -25,7 +24,7 @@ export default function Products() {
 
     const products = useProducts();
     const productCountByBrand = useProductCountByBrand(products);
-    const brands = useBrands();
+    const brands = useBrands(); // <- нижче імпорт
 
     const [activeBrandKey, setActiveBrandKey] = useState(null);
     const [visibleCountByBrand, setVisibleCountByBrand] = useState({});
@@ -152,3 +151,5 @@ export default function Products() {
         </section>
     );
 }
+
+
