@@ -14,6 +14,15 @@ function toImageKey(p) {
     return k;
 }
 
+function formatWeight(p) {
+    const grams = Number.isFinite(p?.weightGrams) ? Number(p.weightGrams)
+        : Number.isFinite(p?.price) ? Number(p.price)
+            : 0;
+    if (!grams) return '';
+    if (grams >= 1000 && grams % 1000 === 0) return `${grams / 1000} кг`;
+    return `${grams} г`;
+}
+
 function ProductCardBase({
                              p,
                              priority = false,
@@ -25,6 +34,8 @@ function ProductCardBase({
                          }) {
     const Tag = typeof onClick === 'function' ? 'button' : 'div';
     const imageKey = toImageKey(p);
+    const weightLabel = formatWeight(p);
+    const flavor = (p?.flavor || '').trim();
 
     return (
         <Tag
@@ -35,6 +46,9 @@ function ProductCardBase({
             <div className={s.body}>
                 <div className={s.media}>
                     <div className={s.mediaInner}>
+                        {/* flavor badge */}
+                        {flavor && <span className={s.flavorBadge}>{flavor}</span>}
+
                         <ProductImage
                             imageKey={imageKey}
                             alt={p?.name || 'Фото товару'}
@@ -46,8 +60,12 @@ function ProductCardBase({
                             sizes={sizes}
                             {...imgProps}
                         />
+
+                        {/* weight badge */}
+                        {weightLabel && <span className={s.weightBadge}>{weightLabel}</span>}
                     </div>
                 </div>
+
                 <TitleTag className={s.title}>{p?.name}</TitleTag>
             </div>
         </Tag>
