@@ -16,11 +16,18 @@ function toImageKey(p) {
 
 function formatWeight(p) {
     const grams = Number.isFinite(p?.weightGrams) ? Number(p.weightGrams)
-        : Number.isFinite(p?.price) ? Number(p.price)
-            : 0;
+        : Number.isFinite(p?.price) ? Number(p.price) : 0;
     if (!grams) return '';
     if (grams >= 1000 && grams % 1000 === 0) return `${grams / 1000} кг`;
     return `${grams} г`;
+}
+
+function textOnBg(bg = '#000') {
+    const hex = String(bg || '').replace('#','');
+    const n = parseInt(hex.length === 3 ? hex.split('').map(c=>c+c).join('') : hex || '000000', 16);
+    const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    const luma = (0.299*r + 0.587*g + 0.114*b) / 255;
+    return luma > 0.6 ? '#111' : '#fff';
 }
 
 function ProductCardBase({
@@ -36,6 +43,8 @@ function ProductCardBase({
     const imageKey = toImageKey(p);
     const weightLabel = formatWeight(p);
     const flavor = (p?.flavor || '').trim();
+    const flavorBg = (p?.flavorColor || '').trim() || '#10b981';
+    const flavorColor = textOnBg(flavorBg);
 
     return (
         <Tag
@@ -46,8 +55,11 @@ function ProductCardBase({
             <div className={s.body}>
                 <div className={s.media}>
                     <div className={s.mediaInner}>
-                        {/* flavor badge */}
-                        {flavor && <span className={s.flavorBadge}>{flavor}</span>}
+                        {flavor && (
+                            <span className={s.flavorBadge} style={{ background: flavorBg, color: flavorColor }}>
+                {flavor}
+              </span>
+                        )}
 
                         <ProductImage
                             imageKey={imageKey}
@@ -61,11 +73,9 @@ function ProductCardBase({
                             {...imgProps}
                         />
 
-                        {/* weight badge */}
                         {weightLabel && <span className={s.weightBadge}>{weightLabel}</span>}
                     </div>
                 </div>
-
                 <TitleTag className={s.title}>{p?.name}</TitleTag>
             </div>
         </Tag>
