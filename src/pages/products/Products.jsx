@@ -17,14 +17,14 @@ import { backgrounds } from '../../data/backgrounds';
 import { useBrands } from './hooks/useBrands';
 import s from './Products.module.scss';
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 4;
 
 export default function Products() {
     const { t } = useTranslation();
 
-    const products = useProducts();
+    const products = useProducts();                  // ⟵ тепер тільки з API
     const productCountByBrand = useProductCountByBrand(products);
-    const brands = useBrands(); // <- нижче імпорт
+    const brands = useBrands();                      // ⟵ тільки з API
 
     const [activeBrandKey, setActiveBrandKey] = useState(null);
     const [visibleCountByBrand, setVisibleCountByBrand] = useState({});
@@ -51,7 +51,7 @@ export default function Products() {
 
     const productsByActiveBrand = useMemo(() => {
         if (!activeBrandKey) return [];
-        return products.filter((p) => toKebabKey(p.brand) === activeBrandKey);
+        return (products || []).filter((p) => toKebabKey(p.brand) === activeBrandKey);
     }, [products, activeBrandKey]);
 
     const visibleCount = visibleCountByBrand[activeBrandKey] ?? 0;
@@ -85,13 +85,9 @@ export default function Products() {
 
     return (
         <section className={sectionClass}>
-            {/* Фонове зображення лапок */}
             <BackgroundImageOne {...backgrounds.products} className={s.bgImage} />
-
-            {/* м’який шар */}
             <div className={s.softOverlay} aria-hidden />
 
-            {/* Банер */}
             <ResponsiveBanner
                 webp="/images/backgrounds/dogs-forest.webp"
                 jpg="/images/backgrounds/more-dogs.jpg"
@@ -140,7 +136,7 @@ export default function Products() {
                         sectionId={`brand-products-${activeBrandKey}`}
                         products={productsByActiveBrand}
                         visibleProducts={visibleProducts}
-                        pageSize={PAGE_SIZE}
+                        pageSize={8}
                         onShowMore={handleShowMore}
                         onShowAll={handleShowAll}
                         onCollapse={handleCollapse}
@@ -151,5 +147,3 @@ export default function Products() {
         </section>
     );
 }
-
-
