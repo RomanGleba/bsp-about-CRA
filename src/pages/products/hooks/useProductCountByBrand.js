@@ -1,4 +1,3 @@
-// hooks/useProductCountByBrand.js
 import { useMemo } from 'react';
 import { toKebabKey } from '../utils/brandUtils';
 
@@ -11,7 +10,8 @@ export function useProductCountByBrand(products) {
     return useMemo(() => {
         const map = new Map();
         for (const product of products) {
-            const key = toKebabKey(product.brand);
+            const key = toKebabKey(String(product?.brand || '').trim());
+            if (!key) continue;
             map.set(key, (map.get(key) || 0) + 1);
         }
         return map;
