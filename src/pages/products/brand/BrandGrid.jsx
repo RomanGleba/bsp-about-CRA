@@ -1,6 +1,6 @@
 import React from 'react';
 import s from './BrandGrid.module.scss';
-import { toKebabKey } from '../../utils/brandUtils';
+import { toKebabKey } from '../utils/brandUtils'
 
 /**
  * Відображає всі бренди з лічильником продуктів
