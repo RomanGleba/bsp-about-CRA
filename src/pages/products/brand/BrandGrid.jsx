@@ -1,9 +1,9 @@
 import React from 'react';
-import s from './BrandGrid.module.scss';
-import { toKebabKey } from '../utils/brandUtils'
+import { toKebabKey } from '../utils/brandUtils';
 
 /**
- * Відображає всі бренди з лічильником продуктів
+ * BrandGrid — простий список брендів без стилів.
+ * Відображає назву бренду, кількість продуктів і кнопку для відкриття.
  */
 export default function BrandGrid({
                                       brands = [],
@@ -13,37 +13,66 @@ export default function BrandGrid({
                                       resolveLogoSrc,
                                   }) {
     return (
-        <div className={s.grid}>
+        <div>
             {brands.map((b) => {
                 const brandName = String(b?.name || '').trim();
-                const brandKey  = toKebabKey(brandName);
-                const isActive  = activeBrandKey === brandKey;
-                const count     = productCountByBrand.get(brandKey) || 0;
-                const logoSrc   = resolveLogoSrc ? resolveLogoSrc(b) : (b?.image || '');
+                const brandKey = toKebabKey(brandName);
+                const isActive = activeBrandKey === brandKey;
+                const count = productCountByBrand.get(brandKey) || 0;
+                const logoSrc = resolveLogoSrc ? resolveLogoSrc(b) : (b?.image || '');
 
                 return (
-                    <button
+                    <div
                         key={brandKey || brandName}
-                        type="button"
-                        className={[s.card, isActive ? s.active : ''].join(' ')}
-                        onClick={() => onToggleBrand?.(brandKey)}
-                        data-brand-key={brandKey}
+                        style={{
+                            border: isActive ? '2px solid #0B6EFB' : '1px solid #ccc',
+                            padding: '10px',
+                            marginBottom: '10px',
+                            borderRadius: '8px',
+                        }}
                     >
-                        <div className={s.media}>
+                        <button
+                            type="button"
+                            onClick={() => onToggleBrand?.(brandKey)}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                            }}
+                        >
                             {logoSrc ? (
-                                <img src={logoSrc} alt={brandName} />
+                                <img
+                                    src={logoSrc}
+                                    alt={brandName}
+                                    style={{ width: 60, height: 60, objectFit: 'contain' }}
+                                />
                             ) : (
-                                <div className={s.logoStub} />
+                                <div
+                                    style={{
+                                        width: 60,
+                                        height: 60,
+                                        background: '#eee',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    —
+                                </div>
                             )}
-                        </div>
 
-                        <div className={s.body}>
-                            <div className={s.title}>{brandName}</div>
-                            <div className={s.cta}>
-                                {isActive ? 'Згорнути' : `Дивитися (${count})`}
+                            <div>
+                                <div style={{ fontWeight: '600', fontSize: '16px' }}>{brandName}</div>
+                                <div style={{ fontSize: '14px', color: '#555' }}>
+                                    {isActive ? 'Згорнути' : `Дивитися (${count})`}
+                                </div>
                             </div>
-                        </div>
-                    </button>
+                        </button>
+                    </div>
                 );
             })}
         </div>
