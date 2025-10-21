@@ -12,32 +12,41 @@ async function j(url, opts = {}) {
 
 /**
  * fetchProducts({ signal? })
- * Повертає масив продуктів тільки з `${API}/products`.
- * Якщо API порожній/недоступний/помилка — повертає [] без fallback.
+ * ---
+ * Повертає масив продуктів з `${API}/products`.
+ * Підтримує обидва формати відповіді:
+ *  - старий: [ {...}, {...} ]
+ *  - новий: { items: [ {...} ], total, page, ... }
+ * Якщо API порожній або недоступний — повертає [].
  */
 export async function fetchProducts(opts = {}) {
     const { signal } = opts;
     if (!API) return [];
     try {
-        const arr = await j(`${API}/products`, { signal });
-        return Array.isArray(arr) ? arr : [];
-    } catch {
+        const data = await j(`${API}/products`, { signal });
+        if (Array.isArray(data)) return data;               // старий формат
+        if (data && Array.isArray(data.items)) return data.items; // новий формат з пагінацією
+        return [];
+    } catch (e) {
+        console.warn('fetchProducts failed:', e);
         return [];
     }
 }
 
 /**
  * fetchBrands({ signal? })
- * Повертає масив брендів тільки з `${API}/brands`.
- * Якщо помилка — [] без fallback.
+ * ---
+ * Повертає масив брендів з `${API}/brands`.
+ * Якщо помилка — [].
  */
 export async function fetchBrands(opts = {}) {
     const { signal } = opts;
     if (!API) return [];
     try {
-        const arr = await j(`${API}/brands`, { signal });
-        return Array.isArray(arr) ? arr : [];
-    } catch {
+        const data = await j(`${API}/brands`, { signal });
+        return Array.isArray(data) ? data : [];
+    } catch (e) {
+        console.warn('fetchBrands failed:', e);
         return [];
     }
 }
