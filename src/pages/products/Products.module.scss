@@ -239,15 +239,11 @@
 /* =====================  Сітка товарів  ===================== */
 .gridProducts {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
-  align-items: stretch; /* ⟵ всі картки в рядку однієї висоти */
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
 }
-
-/* опційно, якщо хочеш контролювати зовнішні відступи */
-.productCol {
-  height: 100%; /* ⟵ щоб кожна колонка тягнулась повністю */
-}
+.productCol { width: 100%; }
 
 @media (min-width: 576px){ .gridProducts { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
 @media (min-width: 768px){ .gridProducts { grid-template-columns: repeat(3, 1fr); gap: 22px; } }

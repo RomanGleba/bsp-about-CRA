@@ -4,31 +4,17 @@
   --card-shadow: 0 10px 30px rgba(0, 0, 0, .08);
   --card-border: 1px solid rgba(15, 23, 42, .08);
 
-  /* Медіаблок (робимо трішки вищим) */
+  /* Медіаблок (компактний) */
   --media-bg: linear-gradient(180deg, #f9fafb 0%, #f2f4f7 100%);
   --media-radius: 16px;
   --media-pad: clamp(8px, 1.4vw, 16px);
-  --media-aspect: 2 / 3.6;           /* ⟵ було 2/3.2; зробили вищим медіаблок */
-
-  /* Мінімальна висота картки для всіх */
-  --card-min-h: 420px;               /* ⟵ можна підкрутити */
-}
-
-@media (min-width: 768px) {
-  :root { --card-min-h: 460px; }     /* ⟵ на планшеті/десктопі ще трохи довше */
-}
-@media (min-width: 1200px) {
-  :root { --card-min-h: 500px; }     /* ⟵ на широких екранах */
+  --media-aspect: 2 / 3.2; /* можна 2/3.0 якщо хочеш ще нижче */
 }
 
 /* Картка */
 .productCard {
   width: 100%;
-  min-height: var(--card-min-h);     /* ⟵ головне: задаємо довшу мінімальну висоту для всіх */
-  height: auto;                      /* картка росте, якщо контенту більше */
-  display: flex;                     /* для стабільної внутрішньої компоновки */
-  flex-direction: column;
-
+  height: auto;                           /* картка росте лише там, де треба */
   border-radius: var(--card-radius);
   border: var(--card-border);
   background: #fff;
@@ -57,23 +43,21 @@
 /* Тіло картки */
 .body {
   display: grid;
-  grid-template-rows: auto auto;     /* медіа + текст */
-  row-gap: 10px;
+  grid-template-rows: auto auto;          /* медіа + текст, без фіксованих висот */
+  row-gap: 8px;                           /* підтягнули текст ближче */
   padding: 16px;
-  flex: 1;                           /* заповнює доступну висоту всередині картки */
 }
 @media (min-width: 576px){ .body { padding: 18px; } }
-@media (min-width: 992px){ .body { padding: 20px; row-gap: 12px; } }
+@media (min-width: 992px){ .body { padding: 20px; row-gap: 10px; } }
 
-/* Медіа контейнер (вищий через aspect-ratio) */
+/* Медіа контейнер */
 .media {
   position: relative;
   background: var(--media-bg);
   border-radius: var(--media-radius);
   padding: var(--media-pad);
-  aspect-ratio: var(--media-aspect); /* ⟵ вищий медіаблок => вища картка */
+  aspect-ratio: var(--media-aspect);
   overflow: hidden;
-
   display: grid;
   place-items: center;
 }
@@ -90,7 +74,7 @@
 .media :global(img) { max-width: 100%; max-height: 100%; }
 .media :global(img) {
   width: auto;
-  height: 100%;
+  height: 100%;                           /* рівномірно заповнює медіаблок */
   object-fit: contain;
   object-position: center;
   user-select: none;
@@ -128,7 +112,7 @@
   white-space: nowrap;
 }
 
-/* Заголовок — без обрізання: картка росте скільки треба */
+/* Заголовок — БЕЗ “...”, повний текст, карточка росте */
 .title {
   margin: 0;
   font-weight: 800;
@@ -136,8 +120,8 @@
   font-size: clamp(15px, 0.6vw + 14px, 20px);
   color: #0f172a;
 
-  display: block;
-  overflow: visible;
+  display: block;                         /* прибрали line-clamp і мінвисоту */
+  overflow: visible;                      /* жодних “...” */
   white-space: normal;
   word-break: break-word;
   hyphens: auto;
