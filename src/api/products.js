@@ -1,52 +1,64 @@
-const API = (process.env.REACT_APP_API_URL || '').replace(/\/+$/, '');
+const API      = (process.env.REACT_APP_API_URL || '').replace(/\/+$/, '');
+const CATALOG  = (process.env.REACT_APP_PRODUCTS_CATALOG || '').trim();
+const BRANDS   = (process.env.REACT_APP_BRANDS_INDEX || '').trim();
 
-/**
- * Внутрішній JSON-хелпер.
- */
-async function j(url, opts = {}) {
-    if (!url) throw new Error('Missing URL');
-    const r = await fetch(url, { mode: 'cors', ...opts });
+async function j(url) {
+    const r = await fetch(url, { mode: 'cors' });
     if (!r.ok) throw new Error(`HTTP ${r.status} ${url}`);
     return r.json();
 }
+const hasExt   = (s='') => /\.[a-z0-9]+$/i.test(s);
+const strip    = (s='') => String(s).replace(/^\/+/, '');
 
-/**
- * fetchProducts({ signal? })
- * ---
- * Повертає масив продуктів з `${API}/products`.
- * Підтримує обидва формати відповіді:
- *  - старий: [ {...}, {...} ]
- *  - новий: { items: [ {...} ], total, page, ... }
- * Якщо API порожній або недоступний — повертає [].
- */
-export async function fetchProducts(opts = {}) {
-    const { signal } = opts;
-    if (!API) return [];
+export async function fetchProducts() {
+    // 1) спробувати API якщо є
     try {
-        const data = await j(`${API}/products`, { signal });
-        if (Array.isArray(data)) return data;               // старий формат
-        if (data && Array.isArray(data.items)) return data.items; // новий формат з пагінацією
-        return [];
-    } catch (e) {
-        console.warn('fetchProducts failed:', e);
-        return [];
+        if (API) {
+            const arr = await j(`${API}/products`);
+            if (Array.isArray(arr) && arr.length) return arr;
+        }
+    } catch {}
+
+    // 2) fallback – твій S3/CF JSON (об'єкт { Brand: {products:[...]}, ... })
+    if (!CATALOG) return [];
+    const raw = await j(CATALOG);
+
+    if (Array.isArray(raw)) return raw; // на випадок якщо колись стане масивом
+
+    const out = [];
+    for (const [brand, group] of Object.entries(raw || {})) {
+        (group?.products || []).forEach(p => {
+            const img = strip(p.image || '');                 // "dasty/dasty-banka"
+            const key = hasExt(img) ? img : `${img}.webp`;    // "dasty/dasty-banka.webp"
+            out.push({
+                id: p.id,
+                brand,
+                name: p.name,
+                images: [{ key: `products/${key}` }],           // <= те, що чекає ProductCard/ProductImage
+            });
+        });
     }
+    return out;
 }
 
-/**
- * fetchBrands({ signal? })
- * ---
- * Повертає масив брендів з `${API}/brands`.
- * Якщо помилка — [].
- */
-export async function fetchBrands(opts = {}) {
-    const { signal } = opts;
-    if (!API) return [];
+export async function fetchBrands() {
     try {
-        const data = await j(`${API}/brands`, { signal });
-        return Array.isArray(data) ? data : [];
-    } catch (e) {
-        console.warn('fetchBrands failed:', e);
-        return [];
-    }
+        if (API) {
+            const arr = await j(`${API}/brands`);
+            if (Array.isArray(arr) && arr.length) return arr;
+        }
+    } catch {}
+
+    if (!BRANDS) return [];
+    const raw = await j(BRANDS);
+    const arr =
+        Array.isArray(raw?.brands) ? raw.brands :
+            Array.isArray(raw?.brends) ? raw.brends :
+                Array.isArray(raw) ? raw : [];
+
+    return arr.map(b => ({
+        id: b.id ?? null,
+        name: String(b.name || '').trim(),
+        image: b.image ?? null,
+    }));
 }

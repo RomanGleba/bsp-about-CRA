@@ -5,12 +5,7 @@ import s from './ProductCard.module.scss';
 const hasExt = s => /\.[a-z0-9]+$/i.test(s || '');
 
 function toImageKey(p) {
-    const arr = Array.isArray(p?.images) ? p.images : [];
-    // шукаємо перше НЕ-брендове зображення
-    const main = arr.find(x => x && typeof x === 'object' && x.role !== 'brand' && (x.key || x.url));
-    // якщо нема — візьмемо будь-яке
-    const any  = arr.find(x => x && (x.key || x.url));
-    let k = (main?.key || main?.url || p?.imageKey || p?.image || any?.key || any?.url || '');
+    let k = p?.images?.[0]?.key || p?.imageKey || p?.image || '';
     if (!k) return '';
     k = String(k).replace(/^\/+/, '');
     if (/^https?:\/\//i.test(k) || k.startsWith('/')) return k;

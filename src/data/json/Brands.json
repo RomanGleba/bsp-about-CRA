@@ -1,0 +1,10 @@
+{
+  "brends": [
+    { "id": "brend1", "name": "Dasty",  "image": "dasty-fon" },
+    { "id": "brend2", "name": "Spiky",  "image": "spiky-fon" },
+    { "id": "brend3", "name": "Fincsi", "image": "fincsi-fon" },
+    { "id": "brend4", "name": "Miss kis", "image": "miskis-fon" },
+    { "id": "brend6", "name": "Cattos", "image": "cattos-fon" },
+    {"id": "brend7", "name": "ThankQ", "image": "thankq-fon"}
+  ]
+}
