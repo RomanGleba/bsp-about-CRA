@@ -2,32 +2,69 @@ import React, { memo } from 'react';
 import ProductImage from '../../../ui/background/media/productImage/ProductImage';
 import s from './ProductCard.module.scss';
 
-const hasExt = s => /\.[a-z0-9]+$/i.test(s || '');
+const DEFAULT_SIZES =
+    '(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw';
 
-function toImageKey(p) {
-    let k = p?.images?.[0]?.key || p?.imageKey || p?.image || '';
-    if (!k) return '';
-    k = String(k).replace(/^\/+/, '');
-    if (/^https?:\/\//i.test(k) || k.startsWith('/')) return k;
-    if (!/^(products|brands)\//i.test(k)) k = `products/${k}`;
-    if (!hasExt(k)) k += '.webp';
-    return k;
+function splitTitleAndWeight(name = '') {
+    const sName = String(name).trim();
+
+    const packRe =
+        /^(.*\S)\s+(\d+)\s*[x×]\s*(\d+(?:[.,]\d+)?)\s?(кг|г|kg|g|мл|ml)\.?$/i;
+    const singleRe =
+        /^(.*\S)\s+(\d+(?:[.,]\d+)?)\s?(кг|г|kg|g|мл|ml)\.?$/i;
+
+    const normUnit = (u) => {
+        const unit = u.toLowerCase();
+        if (unit === 'kg') return 'кг';
+        if (unit === 'g') return 'г';
+        if (unit === 'ml') return 'мл';
+        return unit;
+    };
+
+    let m = sName.match(packRe);
+    if (m) {
+        const [, before, count, valRaw, unitRaw] = m;
+        const unit = normUnit(unitRaw);
+        const val = String(valRaw).replace(',', '.');
+        const displayVal = val.includes('.') ? val.replace('.', ',') : val;
+        return { title: before.trim(), weight: `${count}×${displayVal} ${unit}` };
+    }
+
+    m = sName.match(singleRe);
+    if (m) {
+        const [, before, valRaw, unitRaw] = m;
+        const unit = normUnit(unitRaw);
+        const val = String(valRaw).replace(',', '.');
+        const displayVal = val.includes('.') ? val.replace('.', ',') : val;
+        return { title: before.trim(), weight: `${displayVal} ${unit}` };
+    }
+
+    return { title: sName, weight: '' };
 }
 
-function formatWeight(p) {
-    const grams = Number.isFinite(p?.weightGrams) ? Number(p.weightGrams)
-        : Number.isFinite(p?.price) ? Number(p.price) : 0;
-    if (!grams) return '';
-    if (grams >= 1000 && grams % 1000 === 0) return `${grams / 1000} кг`;
-    return `${grams} г`;
-}
+const FLAVOR_COLOR = [
+    { key: /(ялович|говядин|beef|marha)/i, label: 'Яловичина', color: '#e11d48' },
+    { key: /(курк|куриц|chicken|csirke)/i, label: 'Курка',      color: '#f59e0b' },
+    { key: /(індич|индик|turkey|pulyka)/i, label: 'Індичка',    color: '#22c55e' },
+    { key: /(качк|утк|duck|kacsa)/i,       label: 'Качка',      color: '#16a34a' },
+    { key: /(лосос|риба|fish|salmon|tuna)/i, label: 'Риба',     color: '#3b82f6' },
+    { key: /(крол|rabbit|ny[uú]l)/i,       label: 'Кролик',     color: '#a855f7' },
+    { key: /(дичин|game|vad)/i,            label: 'Дичина',     color: '#a3e635' },
+    { key: /(теля|veal)/i,                 label: 'Телятина',   color: '#ef4444' },
+    { key: /(печін|печен|liver)/i,         label: 'Печінка',    color: '#8b5e34' },
+    { key: /(шинк|ham)/i,                  label: 'Шинка',      color: '#ff6b9a' },
+    { key: /(ягнят|ягня|lamb)/i,           label: 'Ягня',       color: '#10b981' },
+    { key: /(м[’']?ясн.*м[іi]кс|асорті|mix)/i, label: 'М’ясний мікс', color: '#d260ee' },
+];
 
-function textOnBg(bg = '#000') {
-    const hex = String(bg || '').replace('#','');
-    const n = parseInt(hex.length === 3 ? hex.split('').map(c=>c+c).join('') : hex || '000000', 16);
-    const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
-    const luma = (0.299*r + 0.587*g + 0.114*b) / 255;
-    return luma > 0.6 ? '#111' : '#fff';
+function extractFlavor(name = '', imageKey = '') {
+    const fields = [String(name), String(imageKey)];
+    for (const text of fields) {
+        for (const def of FLAVOR_COLOR) {
+            if (def.key.test(text)) return { flavor: def.label, color: def.color };
+        }
+    }
+    return { flavor: '', color: '' };
 }
 
 function ProductCardBase({
@@ -35,48 +72,65 @@ function ProductCardBase({
                              priority = false,
                              onClick,
                              focused = false,
-                             sizes,
-                             imgProps,
+                             sizes = DEFAULT_SIZES,
+                             imgProps = {},
                              titleTag: TitleTag = 'h5',
                          }) {
-    const Tag = typeof onClick === 'function' ? 'button' : 'div';
-    const imageKey = toImageKey(p);
-    const weightLabel = formatWeight(p);
-    const flavor = (p?.flavor || '').trim();
-    const flavorBg = (p?.flavorColor || '').trim() || '#10b981';
-    const flavorColor = textOnBg(flavorBg);
+    const interactive = typeof onClick === 'function';
+    const Tag = interactive ? 'button' : 'div';
+
+    const { title, weight } = splitTitleAndWeight(p?.name);
+    const { flavor, color } = extractFlavor(p?.name, p?.image);
 
     return (
         <Tag
-            className={[s.productCard, onClick ? s.clickable : '', focused ? s.focused : ''].filter(Boolean).join(' ')}
-            onClick={onClick || undefined}
-            type={onClick ? 'button' : undefined}
+            type={interactive ? 'button' : undefined}
+            className={[
+                s.productCard,
+                interactive ? s.clickable : '',
+                focused ? s.focused : '',
+            ]
+                .filter(Boolean)
+                .join(' ')}
+            role={interactive ? 'button' : 'group'}
+            aria-label={p?.name || 'Картка товару'}
+            onClick={interactive ? onClick : undefined}
+            title={p?.name}
+            data-interactive={interactive || undefined}
         >
             <div className={s.body}>
-                <div className={s.media}>
-                    <div className={s.mediaInner}>
-                        {flavor && (
-                            <span className={s.flavorBadge} style={{ background: flavorBg, color: flavorColor }}>
-                {flavor}
-              </span>
-                        )}
+                <div className={s.media} aria-hidden="true">
+                    {flavor && (
+                        <span
+                            className={s.flavorBadge}
+                            style={{ backgroundColor: color }}
+                            aria-hidden="true"
+                        >
+                            {flavor}
+                        </span>
+                    )}
 
+                    <div className={s.mediaInner} style={{ '--img-scale': p?.imgScale ?? 1 }}>
                         <ProductImage
-                            imageKey={imageKey}
+                            imageKey={p.image}
                             alt={p?.name || 'Фото товару'}
-                            basePath=""
-                            placeholder="/images/products/"
+                            basePath="/images/products"
                             fetchPriority={priority ? 'high' : 'auto'}
                             loading={priority ? 'eager' : 'lazy'}
                             decoding="async"
                             sizes={sizes}
                             {...imgProps}
                         />
-
-                        {weightLabel && <span className={s.weightBadge}>{weightLabel}</span>}
                     </div>
+
+                    {weight && (
+                        <span className={s.weightBadge} aria-hidden="true">
+                            {weight}
+                        </span>
+                    )}
                 </div>
-                <TitleTag className={s.title}>{p?.name}</TitleTag>
+
+                <TitleTag className={s.title}>{title}</TitleTag>
             </div>
         </Tag>
     );

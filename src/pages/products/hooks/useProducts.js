@@ -1,22 +1,17 @@
 // src/products/hooks/useProducts.js
 import { useEffect, useState } from 'react';
-import { fetchProducts } from '../../../api/products';
+import { fetchProducts, toImageKey } from '../../../api/products';
 import catalogLocal from '../../../data/json/catalog.json';
 
-const hasExt = (s='') => /\.[a-z0-9]+$/i.test(s);
-
 function flattenLocalCatalog(catalog) {
-    // catalog: { "Cattos": { products:[{id,name,image}, ...] }, ... }
     const out = [];
     for (const [brand, payload] of Object.entries(catalog || {})) {
-        (payload?.products || []).forEach(p => {
-            const img = String(p.image || '').trim();           // "cattos/cattos-chicken-banka"
-            const keyPart = hasExt(img) ? img : `${img}.webp`;  // "cattos/cattos-chicken-banka.webp"
+        (payload?.products || []).forEach((p) => {
             out.push({
-                id: p.id,
-                brand,                                            // <-- важливо для фільтрації за брендом
-                name: p.name,
-                images: [{ key: `products/${keyPart}` }],         // <-- те, що чекає ProductCard
+                id:    p.id,
+                brand,
+                name:  p.name,
+                image: toImageKey(p.image),
             });
         });
     }
@@ -38,20 +33,23 @@ export function useProducts() {
     useEffect(() => {
         let alive = true;
         (async () => {
-            const localFlat = flattenLocalCatalog(catalogLocal); // локальний базовий каталог
+            const localFlat = flattenLocalCatalog(catalogLocal);
+
             try {
-                const api = await fetchProducts();                 // очікуємо масив
+                const api = await fetchProducts();   // зараз поверне []
                 const remote = Array.isArray(api) ? api : [];
-                // Зливаємо: пріоритет у API (оновлення через адмінку)
+
                 const merged = dedupeByKey(
                     [...remote, ...localFlat],
-                    (x) => x.id || `${x.brand}::${x.name}`           // ключ для унікальності
+                    (x) => x.id || `${x.brand}::${x.name}`
                 );
+
                 if (alive) setItems(merged);
             } catch {
-                if (alive) setItems(localFlat);                    // немає API → показуємо локалку
+                if (alive) setItems(localFlat);
             }
         })();
+
         return () => { alive = false; };
     }, []);
 

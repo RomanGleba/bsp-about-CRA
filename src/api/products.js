@@ -1,64 +1,44 @@
-const API      = (process.env.REACT_APP_API_URL || '').replace(/\/+$/, '');
-const CATALOG  = (process.env.REACT_APP_PRODUCTS_CATALOG || '').trim();
-const BRANDS   = (process.env.REACT_APP_BRANDS_INDEX || '').trim();
+// src/api/products.js
 
-async function j(url) {
-    const r = await fetch(url, { mode: 'cors' });
-    if (!r.ok) throw new Error(`HTTP ${r.status} ${url}`);
-    return r.json();
+/**
+ * Тут ми НЕ використовуємо жодні API-запити.
+ * Каталог і бренди будуть тільки локальні (з /src/data/json/).
+ * fetchProducts() і fetchBrands() повертають порожні масиви.
+ */
+
+const hasExt = (s = '') => /\.[a-z0-9]+$/i.test(s);
+const strip  = (s = '') => String(s).replace(/^\/+/, '');
+
+/**
+ * Конвертація локального image поля → S3/CloudFront imageKey
+ * "dasty/dasty-banka" → "products/dasty/dasty-banka.webp"
+ */
+export function toImageKey(raw = '') {
+    const img = strip(raw);
+    if (!img) return '';
+
+    let key = /^(products|brands)\//i.test(img)
+        ? img
+        : `products/${img}`;
+
+    if (!hasExt(key)) key += '.webp';
+
+    return key;
 }
-const hasExt   = (s='') => /\.[a-z0-9]+$/i.test(s);
-const strip    = (s='') => String(s).replace(/^\/+/, '');
 
+/**
+ * fetchProducts — повністю відключено.
+ * Бекенд нам не потрібний. Дані приходять із локального catalog.json
+ */
 export async function fetchProducts() {
-    // 1) спробувати API якщо є
-    try {
-        if (API) {
-            const arr = await j(`${API}/products`);
-            if (Array.isArray(arr) && arr.length) return arr;
-        }
-    } catch {}
-
-    // 2) fallback – твій S3/CF JSON (об'єкт { Brand: {products:[...]}, ... })
-    if (!CATALOG) return [];
-    const raw = await j(CATALOG);
-
-    if (Array.isArray(raw)) return raw; // на випадок якщо колись стане масивом
-
-    const out = [];
-    for (const [brand, group] of Object.entries(raw || {})) {
-        (group?.products || []).forEach(p => {
-            const img = strip(p.image || '');                 // "dasty/dasty-banka"
-            const key = hasExt(img) ? img : `${img}.webp`;    // "dasty/dasty-banka.webp"
-            out.push({
-                id: p.id,
-                brand,
-                name: p.name,
-                images: [{ key: `products/${key}` }],           // <= те, що чекає ProductCard/ProductImage
-            });
-        });
-    }
-    return out;
+    return [];  // ❗ важливо: повертаємо пустий масив, щоб useProducts() взяв локалку
 }
 
+/**
+ * fetchBrands — теж відключено.
+ * Бренди будуть з локального brands.json, якщо треба,
+ * або поки що просто не використовуються.
+ */
 export async function fetchBrands() {
-    try {
-        if (API) {
-            const arr = await j(`${API}/brands`);
-            if (Array.isArray(arr) && arr.length) return arr;
-        }
-    } catch {}
-
-    if (!BRANDS) return [];
-    const raw = await j(BRANDS);
-    const arr =
-        Array.isArray(raw?.brands) ? raw.brands :
-            Array.isArray(raw?.brends) ? raw.brends :
-                Array.isArray(raw) ? raw : [];
-
-    return arr.map(b => ({
-        id: b.id ?? null,
-        name: String(b.name || '').trim(),
-        image: b.image ?? null,
-    }));
+    return [];
 }

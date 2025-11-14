@@ -13,7 +13,7 @@ export default function ProductImage({
                                          style,
                                          loading = 'lazy',
                                          decoding = 'async',
-                                         fetchPriority = 'auto',           // <- залишаємо як prop компонента
+                                         fetchPriority = 'auto',
                                          placeholder,
                                      }) {
     if (!imageKey) return null;
@@ -24,6 +24,7 @@ export default function ProductImage({
     const keyNoSlash = typeof imageKey === 'string' ? imageKey.replace(/^\/+/, '') : '';
 
     let src = '';
+
     if (isUrl || isRoot) {
         src = imageKey;
     } else if (CDN_BASE && /^(products|brands)\//i.test(keyNoSlash)) {
@@ -39,9 +40,10 @@ export default function ProductImage({
     const normalizedFetchPriority =
         fetchPriority === 'high' || fetchPriority === 'low' ? fetchPriority : 'auto';
 
-    // готуємо атрибут тільки якщо не 'auto', інакше не додаємо нічого
     const fetchpriorityAttr =
-        normalizedFetchPriority !== 'auto' ? { fetchpriority: normalizedFetchPriority } : {};
+        normalizedFetchPriority !== 'auto'
+            ? { fetchpriority: normalizedFetchPriority }
+            : {};
 
     return (
         <img
@@ -53,12 +55,14 @@ export default function ProductImage({
             sizes={sizes}
             loading={loading}
             decoding={decoding}
-            {...fetchpriorityAttr}         // <-- ВАЖЛИВО: нижній регістр
+            {...fetchpriorityAttr}
             referrerPolicy="no-referrer"
             draggable={false}
             style={{ display: 'block', maxWidth: '100%', ...style }}
             onError={(e) => {
-                if (e.currentTarget.src !== fallback) e.currentTarget.src = fallback;
+                if (e.currentTarget.src !== fallback) {
+                    e.currentTarget.src = fallback;
+                }
             }}
         />
     );
