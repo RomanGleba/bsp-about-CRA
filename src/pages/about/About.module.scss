@@ -1,6 +1,7 @@
 /* ===== THEME ===== */
 $accent: #16a34a;
 $ink: #0b1224;
+$bg-salad: #6ee36b;
 
 $card: #ffffff;
 $cardBorder: rgba($ink, .10);
@@ -83,8 +84,28 @@ $sm: 576px;
 .statLabel{ font-size:1rem; color:$ink; opacity:.72; }
 
 /* ===== CONTENT ===== */
-.section{ position:relative; background:transparent; margin-top:0; padding-top:clamp(24px,2.5vw,40px); isolation:isolate; }
-.contentBg{ position:absolute; inset:0; z-index:0; }
+.section{
+  position:relative;
+  background:$bg-salad;   /* салатово-зелений фон */
+  margin-top:0;
+  padding-top:clamp(24px,2.5vw,40px);
+  isolation:isolate;
+  overflow:hidden;
+}
+
+/* шар із лапками */
+.pawsLayer{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:url('../../assets/paw.svg');
+  background-repeat:repeat;
+  background-size:120px 120px;
+  opacity:0.22;
+}
+
+.contentBg{ position:absolute; inset:0; z-index:-1; }
 .container{ max-width:1200px; margin:0 auto; position:relative; z-index:1; }
 
 .brandsSummary{ margin-top:0; }

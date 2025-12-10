@@ -1,8 +1,12 @@
 import React from 'react';
 import { Typography } from 'antd';
 import {
-    HistoryOutlined, TagsOutlined, RocketOutlined,
-    CarOutlined, SafetyOutlined, HeartOutlined
+    HistoryOutlined,
+    TagsOutlined,
+    RocketOutlined,
+    CarOutlined,
+    SafetyOutlined,
+    HeartOutlined,
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +15,8 @@ import { backgrounds } from '../../data/backgrounds';
 
 import aboutUA from '../../data/json/AboutUs.json';
 import aboutEN from '../../data/json/AboutUs.en.json';
+
+import { cdn } from '../../utils/cdn';
 
 import s from './About.module.scss';
 
@@ -27,51 +33,10 @@ const normBrandKey = (v = '') =>
         .replace(/^-+|-+$/g, '')
         .replace(/-+/g, '-');
 
-const brandAssetsMap = (() => {
-    const map = {};
-    try {
-        if (typeof import.meta !== 'undefined' && import.meta.glob) {
-            // @ts-ignore
-            const mods = import.meta.glob('../../assets/brands/*.{png,jpg,jpeg,webp,svg}', {
-                eager: true, as: 'url',
-            });
-            for (const p in mods) {
-                const file = p.split('/').pop() || '';
-                const base = file.replace(/\.(png|jpe?g|webp|svg)$/i, '');
-                const dash = normBrandKey(base);
-                const tight = dash.replace(/-/g, '');
-                // @ts-ignore
-                const url = mods[p];
-                map[dash] = url;
-                map[tight] = url;
-            }
-            return map;
-        }
-    } catch {}
-    try {
-        // eslint-disable-next-line global-require
-        const ctx = require.context('../../assets/brands', false, /\.(png|jpe?g|webp|svg)$/);
-        ctx.keys().forEach((k) => {
-            const file = k.replace('./', '');
-            const base = file.replace(/\.(png|jpe?g|webp|svg)$/i, '');
-            const dash = normBrandKey(base);
-            const tight = dash.replace(/-/g, '');
-            const url = ctx(k);
-            map[dash] = url;
-            map[tight] = url;
-        });
-    } catch {}
-    return map;
-})();
-
+// Будуємо шлях до S3/CDN: brandsLogo/{brand}.svg
 const resolveBrandLogo = (name = '') => {
-    const dash = normBrandKey(name);
-    const tight = dash.replace(/-/g, '');
-    return (
-        brandAssetsMap[dash] ||
-        brandAssetsMap[tight] ||
-        `${process.env.PUBLIC_URL || ''}/images/brands/${dash}.webp`
-    );
+    const dash = normBrandKey(name); // "Nutra 5 Stars" -> "nutra-5-stars"
+    return cdn(`/brandsLogo/${dash}.svg`);
 };
 
 const StatStrip = React.memo(({ stats = [] }) => {
@@ -92,7 +57,9 @@ const BrandGrid = React.memo(({ title, names = [] }) => {
     if (!names?.length) return null;
     return (
         <div className={s.brandBlock}>
-            <Title level={4} className={s.h4}>{title}</Title>
+            <Title level={4} className={s.h4}>
+                {title}
+            </Title>
             <ul className={s.brandGrid}>
                 {names.map((name) => (
                     <li
@@ -108,10 +75,11 @@ const BrandGrid = React.memo(({ title, names = [] }) => {
                             decoding="async"
                             sizes="(max-width: 600px) 40vw, (max-width: 1200px) 22vw, 180px"
                             onError={(e) => {
-                                const img = e.currentTarget; img.onerror = null;
-                                if (/\.webp($|\?)/i.test(img.src)) { img.src = img.src.replace(/\.webp/i, '.png'); return; }
-                                if (/\.png($|\?)/i.test(img.src))  { img.src = img.src.replace(/\.png/i,  '.jpg'); return; }
-                                img.src = `${process.env.PUBLIC_URL || ''}/images/brands/placeholder.webp`;
+                                const img = e.currentTarget;
+                                img.onerror = null;
+
+                                // Якщо основний svg не завантажився — ставимо плейсхолдер
+                                img.src = cdn('/brandsLogo/placeholder.svg');
                             }}
                         />
                     </li>
@@ -126,7 +94,7 @@ export default function About() {
 
     const about = React.useMemo(() => {
         const lang = (i18n.language || '').toLowerCase();
-        return lang.startsWith('en') ? (aboutEN || {}) : (aboutUA || {});
+        return lang.startsWith('en') ? aboutEN || {} : aboutUA || {};
     }, [i18n.language]);
 
     const title = about?.title || '';
@@ -152,23 +120,67 @@ export default function About() {
             : '');
 
     const blocks = [
-        sec?.history && { key: 'history', title: tt?.history, icon: <HistoryOutlined />, text: sec.history },
-        growthText && { key: 'growth', title: tt?.growth, icon: <RocketOutlined />, text: growthText },
-        regions.length > 0 && { key: 'brands', title: tt?.brands, icon: <TagsOutlined />, text: sec.exclusive_region },
-        sec?.distribution && { key: 'distribution', title: tt?.distribution, icon: <TagsOutlined />, text: sec.distribution },
-        sec?.logistics && { key: 'logistics', title: tt?.logistics, icon: <CarOutlined />, text: sec.logistics },
-        sec?.quality && { key: 'quality', title: tt?.quality, icon: <SafetyOutlined />, text: sec.quality },
-        (sec?.gratitude_partners || sec?.gratitude_army || sec?.patriotism || sec?.promise || sec?.position) && {
+        sec?.history && {
+            key: 'history',
+            title: tt?.history,
+            icon: <HistoryOutlined />,
+            text: sec.history,
+        },
+        growthText && {
+            key: 'growth',
+            title: tt?.growth,
+            icon: <RocketOutlined />,
+            text: growthText,
+        },
+        regions.length > 0 && {
+            key: 'brands',
+            title: tt?.brands,
+            icon: <TagsOutlined />,
+            text: sec.exclusive_region,
+        },
+        sec?.distribution && {
+            key: 'distribution',
+            title: tt?.distribution,
+            icon: <TagsOutlined />,
+            text: sec.distribution,
+        },
+        sec?.logistics && {
+            key: 'logistics',
+            title: tt?.logistics,
+            icon: <CarOutlined />,
+            text: sec.logistics,
+        },
+        sec?.quality && {
+            key: 'quality',
+            title: tt?.quality,
+            icon: <SafetyOutlined />,
+            text: sec.quality,
+        },
+        (sec?.gratitude_partners ||
+            sec?.gratitude_army ||
+            sec?.patriotism ||
+            sec?.promise ||
+            sec?.position) && {
             key: 'gratitude',
             title: tt?.gratitude,
             icon: <HeartOutlined />,
-            text: [sec.position, sec.promise, sec.gratitude_partners, sec.gratitude_army, sec.patriotism]
-                .filter(Boolean).join(' ')
-        }
+            text: [
+                sec.position,
+                sec.promise,
+                sec.gratitude_partners,
+                sec.gratitude_army,
+                sec.patriotism,
+            ]
+                .filter(Boolean)
+                .join(' '),
+        },
     ].filter(Boolean);
 
     return (
-        <main className={s.page} style={{ '--hero-shift': '200px', '--content-shift': '200px' }}>
+        <main
+            className={s.page}
+            style={{ '--hero-shift': '200px', '--content-shift': '200px' }}
+        >
             <section className={s.hero} aria-labelledby="about-title">
                 <BackgroundImage {...backgrounds.about} className={s.heroMedia} />
                 <div className={s.heroBg} aria-hidden />
@@ -177,35 +189,44 @@ export default function About() {
                     <div className={s.heroInner}>
                         {slogan && <Text className={s.kicker}>{slogan}</Text>}
                         <span className={s.kickerLine} aria-hidden />
-                        <Title id="about-title" level={1} className={s.title}>{title}</Title>
+                        <Title id="about-title" level={1} className={s.title}>
+                            {title}
+                        </Title>
                         {lead && <Paragraph className={s.lead}>{lead}</Paragraph>}
-                        {position && <Paragraph className={s.position}>{position}</Paragraph>}
+                        {position && (
+                            <Paragraph className={s.position}>{position}</Paragraph>
+                        )}
                         <StatStrip stats={stats} />
                     </div>
                 </div>
             </section>
 
             <section className={s.section}>
-                <BackgroundImage
-                    {...backgrounds.partners}
-                    className={s.contentBg}
-                    overlay="linear-gradient(180deg, rgba(248,251,255,.96), rgba(255,255,255,.98))"
-                    loading="lazy"
-                    fetchPriority="low"
-                />
+                {/* салатовий фон + тайл із paws.svg */}
+                <div className={s.pawsLayer} aria-hidden />
 
                 <div className={s.container}>
                     <section
                         className={`${s.brandsSummary} ${s.brandsSummaryCard}`}
                         aria-labelledby="brands-summary-title"
                     >
-                        <Title level={2} id="brands-summary-title" className={s.h2}>
+                        <Title
+                            level={2}
+                            id="brands-summary-title"
+                            className={s.h2}
+                        >
                             {labels?.brands_summary_title || 'Бренди та партнерства'}
                         </Title>
 
                         <BrandGrid title={labels?.own || 'Власні ТМ'} names={own} />
-                        <BrandGrid title={labels?.ua || 'Ексклюзивні ТМ в Україні'} names={ua} />
-                        <BrandGrid title={labels?.regions || 'Ексклюзивні ТМ у регіонах'} names={regions} />
+                        <BrandGrid
+                            title={labels?.ua || 'Ексклюзивні ТМ в Україні'}
+                            names={ua}
+                        />
+                        <BrandGrid
+                            title={labels?.regions || 'Ексклюзивні ТМ у регіонах'}
+                            names={regions}
+                        />
                         {note && <Paragraph className={s.note}>{note}</Paragraph>}
                     </section>
 
@@ -217,7 +238,9 @@ export default function About() {
                                 <div className={s.body}>
                                     <div className={s.head}>
                                         <span className={s.icon}>{b.icon}</span>
-                                        <Title level={3} className={s.h3}>{b.title}</Title>
+                                        <Title level={3} className={s.h3}>
+                                            {b.title}
+                                        </Title>
                                     </div>
                                     <Paragraph className={s.text}>{b.text}</Paragraph>
                                 </div>

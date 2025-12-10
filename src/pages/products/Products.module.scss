@@ -24,12 +24,13 @@
 
   --shadow: 0 8px 24px rgba(0,0,0,.06);
   --shadow-lg: 0 12px 32px rgba(0,0,0,.10);
-  --shadow-brand: 0 12px 32px rgba(34,197,94,.12);
+  --shadow-brand: 0 12px 32px rgba(132,204,22,.20); /* lime-ish */
 
-  /* Фон секції зображенням */
-  --bg-dim-top: .35;
-  --bg-soft-from: .03;
-  --bg-soft-to: .07;
+  /* салатово-зелений фон */
+  --bg-salad: #6ee36b;
+
+  /* розмір тайлу лапки */
+  --paws-size: 120px;
 }
 
 /* =====================  Базовий контейнер секції  ===================== */
@@ -40,6 +41,26 @@
   z-index: 0;
   isolation: isolate;
   color-scheme: light;
+
+  /* суцільний салатово-зелений фон */
+  background: var(--bg-salad);
+}
+
+/* ---------------------  Шар із лапками  --------------------- */
+.pawsLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;            /* над зеленим фоном, під всім іншим */
+  pointer-events: none;
+
+  /* шлях від src/pages/products/Products.module.scss до src/assets/paws.svg */
+  background-image: url('../../assets/paw.svg');
+  background-repeat: repeat;
+  background-size: var(--paws-size) var(--paws-size);
+  background-position: 0 0;
+
+  /* робимо лапки трохи мʼякшими */
+  opacity: 0.22;
 }
 
 /* ---------------------  Фонове зображення  --------------------- */
@@ -69,15 +90,22 @@
   z-index: 1;
   pointer-events: none;
   backdrop-filter: blur(1px);
+
+  /* прозорий салатовий градієнт */
   background: linear-gradient(
                   to bottom,
-                  rgba(255,255,255,var(--bg-soft-from)),
-                  rgba(255,255,255,var(--bg-soft-to))
+                  rgba(110, 227, 107, 0.18),
+                  rgba(110, 227, 107, 0.38)
   );
 }
 
 /* =====================  Банер  ===================== */
-.bannerFull { position: relative; width: 100%; overflow: hidden; z-index: 2; }
+.bannerFull {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  z-index: 2;
+}
 .bannerContent {
   position: relative;
   z-index: 2;
@@ -105,7 +133,7 @@
   line-height: 1.6;
   text-shadow: 0 1px 2px rgba(0,0,0,.35);
 }
-@media (max-width: 480px){
+@media (max-width: 480px) {
   .bannerContent { text-align: left; }
   .bannerLead { max-width: 100%; }
 }
@@ -119,8 +147,12 @@
   padding: clamp(16px, 3vw, 28px) 0;
 }
 
-.focusMode .container { padding-top: clamp(12px, 2.5vw, 24px); }
-.focusContainer { max-width: var(--content-narrow); }
+.focusMode .container {
+  padding-top: clamp(12px, 2.5vw, 24px);
+}
+.focusContainer {
+  max-width: var(--content-narrow);
+}
 
 /* =====================  Divider / Заголовок секції  ===================== */
 .divider {
@@ -154,9 +186,21 @@
 }
 .brandCol { width: 100%; }
 
-@media (min-width: 576px){ .gridBrands { gap: 18px; } }
-@media (min-width: 768px){ .gridBrands { grid-template-columns: repeat(3, 1fr); gap: 22px; } }
-@media (min-width: 992px){ .gridBrands { grid-template-columns: repeat(4, 1fr); gap: 24px; } }
+@media (min-width: 576px) {
+  .gridBrands { gap: 18px; }
+}
+@media (min-width: 768px) {
+  .gridBrands {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+}
+@media (min-width: 992px) {
+  .gridBrands {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+}
 
 /* Плитка бренду */
 .brandTile {
@@ -174,16 +218,29 @@
   min-height: 230px;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .brandTile { transition: box-shadow .18s ease, border-color .18s ease, filter .18s ease; }
+  .brandTile {
+    transition: box-shadow .18s ease, border-color .18s ease, filter .18s ease;
+  }
   .brandTile:hover {
     filter: brightness(1.02);
     box-shadow: var(--shadow-lg);
     border-color: var(--muted-2);
   }
 }
-@media (hover: none) { .brandTile:hover { filter: none; box-shadow: var(--shadow); } }
-.brandTile:focus-visible { outline: 2px solid rgba(37,99,235,.6); outline-offset: 2px; }
-.brandTile.active { border-color: rgba(34,197,94,.35); box-shadow: var(--shadow-brand); }
+@media (hover: none) {
+  .brandTile:hover {
+    filter: none;
+    box-shadow: var(--shadow);
+  }
+}
+.brandTile:focus-visible {
+  outline: 2px solid rgba(37,99,235,.6);
+  outline-offset: 2px;
+}
+.brandTile.active {
+  border-color: rgba(34,197,94,.35);
+  box-shadow: var(--shadow-brand);
+}
 
 .brandMedia {
   background: linear-gradient(180deg,#f9fafb 0%,#f2f4f7 100%) !important;
@@ -193,7 +250,11 @@
   aspect-ratio: 3 / 2;
   overflow: hidden;
 }
-.brandMediaImg { width: 100%; height: 100%; object-fit: contain; }
+.brandMediaImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
 /* Інфо бренду */
 .brandInfo {
@@ -202,7 +263,10 @@
   gap: 8px;
   align-items: center;
 }
-.brandNameRow { display: grid; gap: 6px; }
+.brandNameRow {
+  display: grid;
+  gap: 6px;
+}
 .brandName {
   font-weight: 700;
   color: var(--text-900);
@@ -229,12 +293,23 @@
   color: #64748b;
   transition: transform .18s ease, color .18s ease;
 }
-.brandTile.active .chev { transform: scaleX(-1); color: var(--text-900); }
-.brandTile.active .countPill { background: rgba(2,122,72,.16); }
+.brandTile.active .chev {
+  transform: scaleX(-1);
+  color: var(--text-900);
+}
+.brandTile.active .countPill {
+  background: rgba(2,122,72,.16);
+}
 
 /* =====================  Продукти бренду  ===================== */
-.brandProducts { grid-column: 1 / -1; margin-top: 8px; }
-.brandProducts.expanded { padding-top: 8px; border-top: 1px dashed var(--muted-2); }
+.brandProducts {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+}
+.brandProducts.expanded {
+  padding-top: 8px;
+  border-top: 1px dashed var(--muted-2);
+}
 
 /* =====================  Сітка товарів  ===================== */
 .gridProducts {
@@ -245,9 +320,24 @@
 }
 .productCol { width: 100%; }
 
-@media (min-width: 576px){ .gridProducts { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
-@media (min-width: 768px){ .gridProducts { grid-template-columns: repeat(3, 1fr); gap: 22px; } }
-@media (min-width: 992px){ .gridProducts { grid-template-columns: repeat(4, 1fr); gap: 28px; } }
+@media (min-width: 576px) {
+  .gridProducts {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+@media (min-width: 768px) {
+  .gridProducts {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+}
+@media (min-width: 992px) {
+  .gridProducts {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+}
 
 .productCol .media,
 .productCol .imageWrap {
@@ -265,9 +355,11 @@
 }
 
 /* дуже вузькі телефони */
-@media (max-width: 360px){
+@media (max-width: 360px) {
   .gridBrands,
-  .gridProducts { grid-template-columns: 1fr; }
+  .gridProducts {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* =====================  Пагінація / Кнопки  ===================== */
@@ -307,11 +399,17 @@
 @media (hover: none) {
   .loadMoreBtn:hover,
   .showAllBtn:hover,
-  .collapseBtn:hover { transform: none; }
+  .collapseBtn:hover {
+    transform: none;
+  }
 }
 
 /* =====================  Back button  ===================== */
-.backWrap { margin: 16px 0 24px; display: flex; justify-content: flex-start; }
+.backWrap {
+  margin: 16px 0 24px;
+  display: flex;
+  justify-content: flex-start;
+}
 .backBtn {
   display: inline-flex;
   align-items: center;
@@ -327,7 +425,14 @@
   transition: all .2s ease;
   box-shadow: 0 2px 6px rgba(22,163,74,.12);
 }
-.backBtn:hover { background: #d1fae5; }
-.backBtn:active { transform: translateY(0); box-shadow: 0 1px 4px rgba(22,163,74,.12); }
-.backBtn:focus-visible { outline: 2px solid #34d399; outline-offset: 3px; }
-
+.backBtn:hover {
+  background: #d1fae5;
+}
+.backBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(22,163,74,.12);
+}
+.backBtn:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 3px;
+}

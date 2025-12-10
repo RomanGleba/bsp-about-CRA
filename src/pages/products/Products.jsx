@@ -1,5 +1,11 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, {
+    useMemo,
+    useState,
+    useCallback,
+    useEffect,
+} from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 import ProductCard from './productCard/ProductCard';
 import ResponsiveBanner from '../../ui/background/ResponsiveBanner';
@@ -15,43 +21,77 @@ import { useProducts } from './hooks/useProducts';
 import { useProductCountByBrand } from './hooks/useProductCountByBrand';
 import { backgrounds } from '../../data/backgrounds';
 import { useBrands } from './hooks/useBrands';
+
 import s from './Products.module.scss';
 
 const PAGE_SIZE = 8;
 
 export default function Products() {
     const { t } = useTranslation();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const products = useProducts();
     const productCountByBrand = useProductCountByBrand(products);
-    const brands = useBrands(); // <- нижче імпорт
+    const brands = useBrands();
 
-    const [activeBrandKey, setActiveBrandKey] = useState(null);
-    const [visibleCountByBrand, setVisibleCountByBrand] = useState({});
+    // 1) читаємо активний бренд із URL ?brand=...
+    const initialBrandKey = searchParams.get('brand') || null;
+
+    const [activeBrandKey, setActiveBrandKey] = useState(initialBrandKey);
+    const [visibleCountByBrand, setVisibleCountByBrand] = useState(() =>
+        initialBrandKey ? { [initialBrandKey]: PAGE_SIZE } : {}
+    );
+
+    // 2) коли activeBrandKey змінюється (включно з перезавантаженням) — скролимо до блоку бренду
+    useEffect(() => {
+        if (!activeBrandKey) return;
+
+        requestAnimationFrame(() => {
+            document
+                .querySelector(`[data-brand-key="${activeBrandKey}"]`)
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }, [activeBrandKey]);
 
     const handleToggleBrand = useCallback(
         (brandKey) => {
             setActiveBrandKey((current) => {
                 const next = current === brandKey ? null : brandKey;
-                if (next && !visibleCountByBrand[next]) {
-                    setVisibleCountByBrand((prev) => ({ ...prev, [next]: PAGE_SIZE }));
+
+                // оновлюємо query-параметр ?brand=...
+                const nextParams = new URLSearchParams(searchParams);
+                if (next) {
+                    nextParams.set('brand', next);
+                } else {
+                    nextParams.delete('brand');
                 }
-                requestAnimationFrame(() => {
-                    document
-                        .querySelector(`[data-brand-key="${next}"]`)
-                        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                });
+                setSearchParams(nextParams);
+
+                if (next && !visibleCountByBrand[next]) {
+                    setVisibleCountByBrand((prev) => ({
+                        ...prev,
+                        [next]: PAGE_SIZE,
+                    }));
+                }
+
                 return next;
             });
         },
-        [visibleCountByBrand]
+        [searchParams, setSearchParams, visibleCountByBrand]
     );
 
-    const handleResetToAllBrands = () => setActiveBrandKey(null);
+    const handleResetToAllBrands = () => {
+        setActiveBrandKey(null);
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete('brand');
+        setSearchParams(nextParams);
+    };
 
     const productsByActiveBrand = useMemo(() => {
         if (!activeBrandKey) return [];
-        return products.filter((p) => toKebabKey(p.brand) === activeBrandKey);
+        return products.filter(
+            (p) => toKebabKey(p.brand) === activeBrandKey
+        );
     }, [products, activeBrandKey]);
 
     const visibleCount = visibleCountByBrand[activeBrandKey] ?? 0;
@@ -80,22 +120,34 @@ export default function Products() {
             [activeBrandKey]: PAGE_SIZE,
         }));
 
-    const sectionClass = `${s.section} ${activeBrandKey ? s.focusMode : ''}`;
-    const containerClass = `${s.container} ${activeBrandKey ? s.focusContainer : ''}`;
+    const sectionClass = `${s.section} ${
+        activeBrandKey ? s.focusMode : ''
+    }`;
+    const containerClass = `${s.container} ${
+        activeBrandKey ? s.focusContainer : ''
+    }`;
 
     return (
         <section className={sectionClass}>
-            {/* Фонове зображення лапок */}
-            <BackgroundImageOne {...backgrounds.products} className={s.bgImage} />
+            {/* Шар із повторюваними лапками на салатовому фоні */}
+            <div className={s.pawsLayer} aria-hidden />
 
-            {/* м’який шар */}
+            {/* Фонове зображення (якщо треба залишити додатковий бекграунд) */}
+            <BackgroundImageOne
+                {...backgrounds.products}
+                className={s.bgImage}
+            />
+
+            {/* м’який салатовий шар поверх */}
             <div className={s.softOverlay} aria-hidden />
 
             {/* Банер */}
             <ResponsiveBanner
                 webp="/images/backgrounds/dogs-forest.webp"
                 jpg="/images/backgrounds/more-dogs.jpg"
-                alt={t('products.bannerAlt', { defaultValue: 'Корм для улюбленців' })}
+                alt={t('products.bannerAlt', {
+                    defaultValue: 'Корм для улюбленців',
+                })}
                 height="clamp(340px, 56vh, 600px)"
                 overlay="linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.25))"
                 className={s.bannerFull}
@@ -103,7 +155,9 @@ export default function Products() {
             >
                 <div className={s.bannerContent}>
                     <h1 className={s.bannerTitle}>
-                        {t('products.title', { defaultValue: 'Наша продукція' })}
+                        {t('products.title', {
+                            defaultValue: 'Наша продукція',
+                        })}
                     </h1>
                     <p className={s.bannerLead}>
                         {t('products.lead', {
@@ -118,12 +172,19 @@ export default function Products() {
                 <DividerBar
                     label={
                         activeBrandKey
-                            ? t('brands.selected', { defaultValue: 'Вибраний бренд' })
-                            : t('brands.all', { defaultValue: 'Продукція' })
+                            ? t('brands.selected', {
+                                defaultValue: 'Вибраний бренд',
+                            })
+                            : t('brands.all', {
+                                defaultValue: 'Продукція',
+                            })
                     }
                 >
                     {activeBrandKey && (
-                        <BackButton onClick={handleResetToAllBrands} label="Повернути всі бренди" />
+                        <BackButton
+                            onClick={handleResetToAllBrands}
+                            label="Повернути всі бренди"
+                        />
                     )}
                 </DividerBar>
 
@@ -151,5 +212,3 @@ export default function Products() {
         </section>
     );
 }
-
-

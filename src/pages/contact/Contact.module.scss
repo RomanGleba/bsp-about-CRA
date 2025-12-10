@@ -17,6 +17,9 @@ $radius-md: 12px;
 
 $shadow: 0 10px 30px rgba(2,6,23,.08);
 
+/* салатово-зелений фон + розмір лапок */
+$bg-salad: #6ee36b;
+
 /* ===== LAYOUT ===== */
 .section {
   position: relative;
@@ -24,7 +27,7 @@ $shadow: 0 10px 30px rgba(2,6,23,.08);
   min-height: 100vh;
   min-height: 100dvh; /* сучасні браузери (включно з iOS 16+) */
   padding: 48px 0 64px;
-  background: transparent; /* фон малює .bg */
+  background: $bg-salad; /* тепер фон тут, а не на .bg */
   isolation: isolate;
 }
 /* якщо підтримується svh (враховує смуги браузера на мобілках), використовуємо його */
@@ -32,10 +35,25 @@ $shadow: 0 10px 30px rgba(2,6,23,.08);
   .section { min-height: 100svh; }
 }
 
+/* шар із лапками поверх салатового фону */
+.pawsLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  /* шлях від src/pages/contact/Contact.module.scss до src/assets/paws.svg */
+  background-image: url('../../assets/paw.svg');
+  background-repeat: repeat;
+  background-size: 120px 120px;
+  background-position: 0 0;
+  opacity: 0.22;
+}
+
 .bg {
   position: absolute;
   inset: 0;
-  z-index: 0; /* під контентом */
+  z-index: -1; /* під лапками + зеленим фоном */
   pointer-events: none; /* щоб фон не перехоплював кліки */
 }
 /* гарантуємо повне покриття картинкою */
@@ -50,7 +68,7 @@ $shadow: 0 10px 30px rgba(2,6,23,.08);
 
 .container {
   position: relative;
-  z-index: 1;  /* поверх фону */
+  z-index: 1;  /* поверх фону + лапок */
   max-width: 980px;
   margin: 0 auto;
   padding: 0 16px;

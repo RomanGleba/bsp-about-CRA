@@ -3,8 +3,8 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 
-import en from './locales/en/translation.json';
-import ua from './locales/ua/translation.json';
+import en from './locales/en.json';
+import ua from './locales/ua.json';
 
 // Обираємо стартову мову: localStorage → window.__APP_LANG → мова браузера
 const stored = typeof window !== 'undefined' ? localStorage.getItem('lang') : null;

@@ -21,21 +21,19 @@ const CONTACTS = {
 const telHref = (p) => `tel:${String(p).replace(/[^\d+]/g, '')}`;
 const mailHref = (e) => `mailto:${String(e).trim()}`;
 const mapsHref = (addr) =>
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(String(addr).trim())}`;
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        String(addr).trim()
+    )}`;
 
 export default function Contacts() {
     const { t } = useTranslation();
 
     return (
         <section className={s.section} aria-labelledby="contacts-title">
-            {/* фонове зображення на ВЕСЬ екран, приглушене для читабельності */}
-            <BackgroundImage
-                {...(backgrounds.partners)}
-                className={s.bg}
-                overlay="linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.96))"
-                loading="lazy"
-                fetchPriority="low"
-            />
+            {/* салатовий фон + патерн із лапок */}
+            <div className={s.pawsLayer} aria-hidden />
+
+
 
             <div className={s.container}>
                 <div className={s.card}>
@@ -51,37 +49,50 @@ export default function Contacts() {
                         </p>
                     </header>
 
-                    <ul className={s.list} aria-label={t('contacts.title', 'Контакти')}>
+                    <ul
+                        className={s.list}
+                        aria-label={t('contacts.title', 'Контакти')}
+                    >
                         <li className={s.item}>
-              <span className={s.icon} aria-hidden="true">
-                <PhoneOutlined />
-              </span>
+                            <span className={s.icon} aria-hidden="true">
+                                <PhoneOutlined />
+                            </span>
                             <div className={s.body}>
-                                <span className={s.label}>{t('contacts.phone', 'Телефон')}</span>
-                                <a href={telHref(CONTACTS.phone)} className={s.link}>
+                                <span className={s.label}>
+                                    {t('contacts.phone', 'Телефон')}
+                                </span>
+                                <a
+                                    href={telHref(CONTACTS.phone)}
+                                    className={s.link}
+                                >
                                     {CONTACTS.phone}
                                 </a>
                             </div>
                         </li>
 
                         <li className={s.item}>
-              <span className={s.icon} aria-hidden="true">
-                <MailOutlined />
-              </span>
+                            <span className={s.icon} aria-hidden="true">
+                                <MailOutlined />
+                            </span>
                             <div className={s.body}>
                                 <span className={s.label}>Email</span>
-                                <a href={mailHref(CONTACTS.email)} className={s.link}>
+                                <a
+                                    href={mailHref(CONTACTS.email)}
+                                    className={s.link}
+                                >
                                     {CONTACTS.email}
                                 </a>
                             </div>
                         </li>
 
                         <li className={s.item}>
-              <span className={s.icon} aria-hidden="true">
-                <EnvironmentOutlined />
-              </span>
+                            <span className={s.icon} aria-hidden="true">
+                                <EnvironmentOutlined />
+                            </span>
                             <div className={s.body}>
-                                <span className={s.label}>{t('contacts.address', 'Адреса')}</span>
+                                <span className={s.label}>
+                                    {t('contacts.address', 'Адреса')}
+                                </span>
                                 <address className={s.addr}>
                                     <a
                                         href={mapsHref(CONTACTS.address)}
@@ -95,14 +106,18 @@ export default function Contacts() {
                             </div>
                         </li>
 
-                        {/* Увесь рядок Instagram клікабельний (якщо потрібно — додамо як раніше) */}
+                        {/* Увесь рядок Instagram клікабельний (якщо потрібно — можна обгорнути в <a> */}
                         <li className={`${s.item} ${s.itemInline}`}>
-              <span className={s.iconGhost} aria-hidden="true">
-                <InstagramLink className={s.ig} size={20} />
-              </span>
+                            <span className={s.iconGhost} aria-hidden="true">
+                                <InstagramLink className={s.ig} size={20} />
+                            </span>
                             <div className={s.body}>
-                                <span className={s.label}>{t('contacts.social', 'Соцмережі')}</span>
-                                <span className={s.text}>{CONTACTS.instagramLabel}</span>
+                                <span className={s.label}>
+                                    {t('contacts.social', 'Соцмережі')}
+                                </span>
+                                <span className={s.text}>
+                                    {CONTACTS.instagramLabel}
+                                </span>
                             </div>
                         </li>
                     </ul>

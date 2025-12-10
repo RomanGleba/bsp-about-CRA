@@ -15,15 +15,15 @@
     "own": ["Dasty", "Spiky"],
     "exclusive_ukraine": ["Fincsi", "Cattos", "Pretty Cat", "Thor"],
     "exclusive_region": [
-      "HealthyPet",
+      "Healthy Pet",
       "Hidog",
       "Nutra 5 Stars",
       "Exclusion",
       "Quattro",
-      "Nature’s Protection",
+      "NaturesProtection",
       "Healthy Snack",
       "AlfPet",
-      "Miss Kis"
+      "MissKis"
     ],
     "distributed_note": "We have over 1000 SKUs in total. We also distribute other brands across Ukraine and in Zakarpattia."
   },
@@ -39,15 +39,15 @@
     "titles": {
       "history": "History",
       "growth": "Growth Despite Challenges",
-      "brands": "Our Brands ",
+      "brands": "Our Brands",
       "distribution": "Distribution",
       "logistics": "Logistics Without Borders",
       "quality": "Quality & Certification",
       "gratitude": "Gratitude"
     },
 
-    "history": "BSP Group is an official importer, manufacturer and distributor of pet products. Founded in 2020. Despite the pandemic, war and crises, the company is constantly developing..",
-    "brands_intro": "\nToday we have two of our own brands, Dasty and Spiky, and four exclusive brands throughout Ukraine, namely Fincsi, Cattos, Pretty Cat, Thor.",
+    "history": "BSP Group is an official importer, manufacturer and distributor of pet products. Founded in 2020. Despite the pandemic, war and crises, the company is constantly developing.",
+    "brands_intro": "Today we have two of our own brands, Dasty and Spiky, and four exclusive brands throughout Ukraine, namely Fincsi, Cattos, Pretty Cat, Thor.",
     "exclusive_region": "We hold exclusive distribution rights in Zakarpattia: TM HealthyPet, TM Hidog, Nutra 5 Stars, Exclusion, Quattro, Nature’s Protection, Healthy Snack, AlfPet, Miss Kis. Over 1000 SKUs in total.",
     "distribution": "We cooperate with retail chains, distributors, wholesale and retail clients. In certain regions, we have exclusive partners.",
     "logistics": "We have built professional logistics that enable fast and cost-efficient deliveries to every corner of Ukraine — from a single bag to tens of tons.",

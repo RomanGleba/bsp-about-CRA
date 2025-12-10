@@ -5,6 +5,10 @@
 
   --text-light: #ffffff;
   --text-sub: #f0f0f0;
+
+  /* салатово-зелений фон + розмір лапок */
+  --bg-salad: #6ee36b;
+  --paws-size: 120px;
 }
 
 .section {
@@ -16,13 +20,31 @@
   padding: clamp(40px, 6vw, 90px) 0;
   overflow: hidden;
   isolation: isolate;
+
+  /* зелений фон як на інших секціях */
+  background: var(--bg-salad);
 }
 
-/* фонове зображення */
+/* шар із лапками (paws.svg), які повторюються по всьому фону */
+.pawsLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  /* шлях від src/pages/partners/ до src/assets/paws.svg */
+  background-image: url('../../assets/paw.svg');
+  background-repeat: repeat;
+  background-size: var(--paws-size) var(--paws-size);
+  background-position: 0 0;
+  opacity: 0.22; /* можна підкрутити, якщо хочеш яскравіше/тьмяніше */
+}
+
+/* фонове зображення (якщо залишаєш BackgroundImage — воно піде під зелений фон) */
 .bgImage {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: -1; /* під зеленим фоном + лапками */
 }
 .bgImage img {
   width: 100%;
@@ -36,11 +58,14 @@
   padding: 0 clamp(12px, 4vw, 24px);
   width: 100%;
   position: relative;
-  z-index: 1;
+  z-index: 1; /* над лапками */
 }
 
 /* заголовки */
-.heading { text-align: center; margin-bottom: clamp(24px, 6vw, 56px); }
+.heading {
+  text-align: center;
+  margin-bottom: clamp(24px, 6vw, 56px);
+}
 .title {
   margin: 0 0 8px;
   font-weight: 800;
@@ -65,7 +90,7 @@
   align-items: center;
 }
 
-/* логотипи — БЕЗ білого фону, паддінгів і тіней */
+/* логотипи — без білого фону, паддінгів, тіней і бордер-радіусів */
 .logo {
   display: block;
   width: clamp(220px, 24vw, 260px);
@@ -75,18 +100,16 @@
   user-select: none;
   pointer-events: none;
 
-  /* видалено: фоновий білий, паддінги, тіні, скруглення-картки */
   background: transparent;
   padding: 0;
   border-radius: 0;
   box-shadow: none;
 }
 
-/* опційне велике скруглення тільки для вибраних логотипів,
-   якщо сам SVG квадратний і хочеш «капсулу» */
+/* якщо десь залишився клас rounded — робимо його нейтральним */
 .rounded {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+  border-radius: 0;
+  overflow: visible;
 }
 
 @media (max-width: 900px) {

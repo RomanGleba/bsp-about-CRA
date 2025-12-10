@@ -15,15 +15,15 @@
     "own": ["Dasty", "Spiky"],
     "exclusive_ukraine": ["Fincsi", "Cattos", "Pretty Cat", "Thor"],
     "exclusive_region": [
-      "HealthyPet",
+      "Healthy Pet",
       "Hidog",
       "Nutra 5 Stars",
       "Exclusion",
       "Quattro",
-      "Nature’s Protection",
+      "NaturesProtection",
       "Healthy Snack",
       "AlfPet",
-      "Miss Kis"
+      "MissKis"
     ],
     "distributed_note": "Всього налічуємо понад 1000 SKU. Також дистриб’юємо інші ТМ по Україні та Закарпаттю."
   },
@@ -38,7 +38,7 @@
     "titles": {
       "history": "Історія",
       "growth": "Зростання попри виклики",
-      "brands": "Наші бренди ",
+      "brands": "Наші бренди",
       "distribution": "Дистрибуція",
       "logistics": "Логістика без кордонів",
       "quality": "Якість і сертифікація",

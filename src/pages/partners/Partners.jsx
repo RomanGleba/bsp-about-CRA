@@ -19,10 +19,10 @@ const partners = [
     { id: 2, name: 'Rozetka',  logo: Rozetka },
     { id: 3, name: 'SPAR',     logo: Spar },
     { id: 4, name: 'Амбар',    logo: Ambar },
-    { id: 5, name: 'Velmart',  logo: Velmart, rounded: true },
-    { id: 6, name: 'Дивоцін',  logo: Divochin, rounded: true },
-    { id: 7, name: 'Kasta',    logo: Kasta, rounded: true },
-    { id: 8, name: 'Maudau',   logo: Maudau, rounded: true },
+    { id: 5, name: 'Velmart',  logo: Velmart },
+    { id: 6, name: 'Дивоцін',  logo: Divochin },
+    { id: 7, name: 'Kasta',    logo: Kasta },
+    { id: 8, name: 'Maudau',   logo: Maudau },
 ];
 
 export default function PartnersPage() {
@@ -30,7 +30,11 @@ export default function PartnersPage() {
 
     return (
         <section className={s.section}>
-            <BackgroundImage {...backgrounds.partners} className={s.bgImage} />
+            {/* салатовий фон + повторюваний paws.svg */}
+            <div className={s.pawsLayer} aria-hidden />
+
+            {/* якщо хочеш, можна взагалі прибрати BackgroundImage, тоді буде тільки зелений + лапки */}
+
 
             <div className={s.container}>
                 <header className={s.heading}>
@@ -38,7 +42,10 @@ export default function PartnersPage() {
                         {t('partners.title', 'Наші партнери')}
                     </h1>
                     <p className={s.subtitle}>
-                        {t('partners.subtitle', 'Ми пишаємося співпрацею з провідними компаніями в усій Україні.')}
+                        {t(
+                            'partners.subtitle',
+                            'Ми пишаємося співпрацею з провідними компаніями в усій Україні.'
+                        )}
                     </p>
                 </header>
 
@@ -48,7 +55,7 @@ export default function PartnersPage() {
                             key={p.id}
                             src={p.logo}
                             alt={p.name}
-                            className={`${s.logo} ${p.rounded ? s.rounded : ''}`}
+                            className={s.logo}
                         />
                     ))}
                 </div>
