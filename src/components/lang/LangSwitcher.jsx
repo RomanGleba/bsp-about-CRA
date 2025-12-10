@@ -23,24 +23,30 @@ export default function LangSwitcher({
     const { i18n } = useTranslation();
     const groupId = useId();
 
-    // ініціалізація (без авто-визначення мови браузера — як просили)
+    // ініціалізація: ДЕФОЛТ ЗАВЖДИ 'uk',
+    // але якщо є valueProp / defaultValue / saved у localStorage — вони мають пріоритет
     const [value, setValue] = useState(() => {
-        if (valueProp) return normalize(valueProp);
-        if (defaultValue) return normalize(defaultValue);
+        if (valueProp !== undefined) return normalize(valueProp);
+        if (defaultValue !== undefined) return normalize(defaultValue);
+
         try {
-            const saved = typeof window !== 'undefined'
-                ? window.localStorage.getItem('lang')
-                : null;
-            const lang = saved || i18n.resolvedLanguage || 'uk';
-            return normalize(lang);
+            if (typeof window !== 'undefined') {
+                const saved = window.localStorage.getItem('lang');
+                if (saved) return normalize(saved);
+            }
         } catch {
-            return 'uk';
+            // ignore
         }
+
+        // абсолютний дефолт
+        return 'uk';
     });
 
     // контрольований режим
     useEffect(() => {
-        if (valueProp !== undefined) setValue(normalize(valueProp));
+        if (valueProp !== undefined) {
+            setValue(normalize(valueProp));
+        }
     }, [valueProp]);
 
     const normalized = normalize(value);
@@ -69,8 +75,8 @@ export default function LangSwitcher({
 
     const options = useMemo(
         () => [
-            { value: 'uk', label: 'Укр', name: 'Українська',  },
-            { value: 'en', label: 'EN', name: 'English',      },
+            { value: 'uk', label: 'Укр', name: 'Українська' },
+            { value: 'en', label: 'EN',  name: 'English' },
         ],
         []
     );
@@ -237,9 +243,8 @@ export default function LangSwitcher({
                             role="radio"
                         />
                         <span className={s.opt}>
-              {/* на десктопі показуємо код без прапора — чисті таби */}
                             {opt.label}
-            </span>
+                        </span>
                     </label>
                 );
             })}
